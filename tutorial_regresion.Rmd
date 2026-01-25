@@ -1,5 +1,304 @@
 ---
-title: "tutorial_regresion"
-output: html_document
+title: "Tutorial de Regresión Lineal Múltiple en R"
+author: |
+  **Grupo de Análisis de Regresión**  
+  Maguiña Tabory Leonardo  
+  Cruzado Flores Abel  
+  Montes Yato, Fátima
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    code_folding: show
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    theme:
+      bg: "#F8F9FA"
+      fg: "#343A40"
+      primary: "#2C3E50"
 ---
+
+# **1. CARÁTULA**
+
+**Curso:** Estadística  
+**Tema:** Regresión Lineal Múltiple  
+**Herramienta:** RStudio  
+**Dataset:** Insurance (Kaggle)
+
+---
+
+# **2. INTRODUCCIÓN**
+
+## 2.1 Importancia de la regresión lineal múltiple
+
+La regresión lineal múltiple es una técnica estadística fundamental que permite modelar la relación entre una variable respuesta cuantitativa y dos o más variables explicativas. A diferencia de la regresión lineal simple, esta metodología considera el efecto conjunto de múltiples factores, lo que permite obtener modelos más realistas y cercanos a situaciones del mundo real.
+
+Esta técnica es ampliamente utilizada en áreas como economía, salud, ingeniería y ciencias sociales, ya que facilita la explicación de fenómenos complejos, la predicción de resultados futuros y la toma de decisiones basadas en datos. El uso del lenguaje R para implementar la regresión lineal múltiple permite realizar análisis reproducibles, verificar supuestos estadísticos y comunicar resultados de manera clara.
+
+---
+
+## 2.2 Objetivos de aprendizaje
+
+### Objetivo general
+
+- **Comprender y aplicar** la regresión lineal múltiple mediante el desarrollo de un tutorial práctico en R.
+
+### Objetivos específicos
+
+- **Identificar** la variable respuesta y las variables explicativas del conjunto de datos.
+- **Realizar** un análisis exploratorio univariado y bivariado.
+- **Ajustar** un modelo de regresión lineal múltiple en R.
+- **Verificar** los supuestos estadísticos del modelo.
+- **Interpretar** los coeficientes de regresión.
+- **Realizar** estimaciones y predicciones utilizando el modelo ajustado.
+
+---
+
+# **3. CASO DE ESTUDIO (DATASET)**
+
+## 3.1 Descripción del problema
+
+En este tutorial se analiza un conjunto de datos relacionado con los costos de seguros médicos individuales. El objetivo principal es estudiar cómo variables demográficas y de estilo de vida influyen en el monto cobrado por el seguro médico.
+
+El análisis de estos factores permite comprender la variabilidad de los costos y proporciona una base para la predicción del gasto esperado de una persona en función de sus características.
+
+---
+
+## 3.2 Origen del dataset
+
+El conjunto de datos utilizado fue obtenido de la plataforma **Kaggle**, una fuente pública de datasets para análisis de datos y aprendizaje automático.
+
+**Fuente:**  
+https://www.kaggle.com/datasets/mirichoi0218/insurance
+
+---
+
+## 3.3 Definición de variables
+
+| Variable | Descripción | Tipo |
+|--------|------------|------|
+| `charges` | Costo del seguro médico | Cuantitativa continua (respuesta) |
+| `age` | Edad del asegurado (años) | Cuantitativa discreta |
+| `bmi` | Índice de masa corporal | Cuantitativa continua |
+| `children` | Número de hijos dependientes | Cuantitativa discreta |
+| `sex` | Sexo del asegurado | Cualitativa nominal |
+| `smoker` | Condición de fumador | Cualitativa dicotómica |
+| `region` | Región geográfica | Cualitativa nominal |
+
+---
+
+# **4. EXPLORACIÓN DE DATOS**
+
+## 4.1 Importación del dataset
+La importación del dataset permite verificar que los datos se han cargado correctamente y observar las primeras observaciones del conjunto de datos.
+
+```{r}
+insurance <- read.csv("data/insurance.csv")
+head(insurance)
+```
+---
+
+## 4.2 Resumen descriptivo univariado
+El análisis descriptivo univariado permite estudiar cada variable de forma individual, identificando medidas de tendencia central, dispersión y posibles valores atípicos. Este análisis es fundamental para comprender la estructura de los datos antes de realizar inferencias estadísticas.
+
+```{r}
+summary(insurance)
+```
+
+## 4.3 Resumen descriptivo bivariado
+El análisis bivariado permite explorar la relación entre la variable respuesta y las variables explicativas, ayudando a identificar patrones relevantes que justifican el uso de un modelo de regresión lineal múltiple.
+```{r}
+boxplot(charges ~ smoker,
+        data = insurance,
+        main = "Costo del seguro médico según condición de fumador",
+        xlab = "Condición de fumador",
+        ylab = "Charges")
+
+```
+
+# **5.MODELAMIENTO ESTADÍSTICO**
+
+## 5.1 Formulación del modelo
+
+El modelo de regresión lineal múltiple propuesto es:
+
+\[
+\text{charges} = \beta_0 + \beta_1(\text{age}) + \beta_2(\text{bmi}) + \beta_3(\text{children}) + \beta_4(\text{sex}) + \beta_5(\text{smoker}) + \beta_6(\text{region}) + \varepsilon
+\]
+
+donde:
+
+- \(\beta_0\) es el intercepto del modelo.
+- \(\beta_1, \beta_2, \dots, \beta_6\) son los coeficientes de regresión asociados a cada variable explicativa.
+- \(\varepsilon\) representa el término de error aleatorio, el cual recoge la variabilidad no explicada por el modelo.
+
+## 5.2 Ajuste del modelo en R
+
+Antes de ajustar el modelo, es necesario convertir las variables cualitativas a factores para que R las trate adecuadamente dentro del modelo de regresión lineal múltiple. El ajuste del modelo permite estimar los coeficientes de regresión y evaluar la significancia estadística de las variables explicativas incluidas en el análisis.
+
+```{r}
+insurance$sex <- as.factor(insurance$sex)
+insurance$smoker <- as.factor(insurance$smoker)
+insurance$region <- as.factor(insurance$region)
+
+modelo <- lm(charges ~ age + bmi + children + sex + smoker + region,
+             data = insurance)
+
+summary(modelo)
+```
+
+## 5.3 Interpretación de los coeficientes de regresión
+
+Cada coeficiente estimado del modelo de regresión lineal múltiple representa el cambio promedio esperado en el costo del seguro médico ante un incremento de una unidad en la variable explicativa correspondiente, manteniendo constantes las demás variables del modelo.
+
+En el caso de las variables cuantitativas, el coeficiente indica cuánto aumenta o disminuye el valor esperado de `charges` por cada unidad adicional de la variable. Para las variables cualitativas, los coeficientes se interpretan en relación con una categoría de referencia, mostrando la diferencia promedio en el costo del seguro médico respecto a dicha categoría.
+
+
+## 5.4 Coeficiente de determinación
+El coeficiente de determinación \(R^2\) indica la proporción de la variabilidad total del costo del seguro médico que es explicada por el conjunto de variables explicativas incluidas en el modelo. Un valor alto de \(R^2\) sugiere un buen ajuste del modelo a los datos observados.
+
+```{r}
+summary(modelo)$r.squared
+```
+
+## 5.5 Verificación del supuesto de normalidad de errores
+
+Esta prueba permite evaluar si los residuos del modelo de regresión siguen una distribución normal, supuesto necesario para la validez de las inferencias estadísticas.
+
+```{r}
+shapiro.test(residuals(modelo))
+```
+
+## 5.6 Verificación del supuesto de homocedasticidad
+
+La homocedasticidad implica que la varianza de los errores del modelo es constante para todos los valores de las variables explicativas. Este supuesto es fundamental para que las estimaciones de los coeficientes y las pruebas de hipótesis sean válidas.
+
+```{r}
+library(lmtest)
+bptest(modelo)
+
+```
+
+## 5.7 Verificación del supuesto de independencia de errores
+
+El supuesto de independencia establece que los errores del modelo no están correlacionados entre sí. Dado que los datos corresponden a observaciones individuales y no a una serie temporal, se asume que este supuesto se cumple.
+
+```{r}
+# Dado que los datos corresponden a observaciones individuales y no a series temporales, se asume independencia de los errores.
+```
+
+## 5.8 Transformación de datos (si aplica)
+
+En caso de que alguno de los supuestos del modelo no se cumpla, puede considerarse una transformación de la variable respuesta con el objetivo de mejorar el ajuste del modelo y la validez de las inferencias estadísticas. Una transformación común es el uso del logaritmo natural de la variable `charges`.
+
+```{r}
+# Ejemplo de transformación logarítmica (opcional)
+# modelo_log <- lm(log(charges) ~ age + bmi + children + sex + smoker + region,
+#                  data = insurance)
+
+```
+
+## 5.9 Prueba de hipótesis global
+
+La prueba de hipótesis global evalúa si el modelo de regresión lineal múltiple es estadísticamente significativo en su conjunto. Esta prueba contrasta la hipótesis nula de que todos los coeficientes de regresión, excepto el intercepto, son iguales a cero.
+
+```{r}
+# La prueba F se obtiene del resumen del modelo
+summary(modelo)
+```
+
+
+## 5.10 Pruebas de hipótesis individuales
+
+Las pruebas de hipótesis individuales permiten evaluar la significancia estadística de cada uno de los coeficientes de regresión del modelo. Estas pruebas contrastan la hipótesis nula de que el coeficiente asociado a una variable explicativa es igual a cero, manteniendo constantes las demás variables.
+```{r}
+# Las pruebas t individuales se obtienen del resumen del modelo
+summary(modelo)
+```
+
+## 5.11 Estimación de una media (puntual e intervalar)
+
+La estimación de una media permite obtener el valor promedio esperado del costo del seguro médico para un individuo con características específicas. Además, se puede construir un intervalo de confianza que refleje la incertidumbre asociada a dicha estimación.
+
+```{r}
+nuevo <- data.frame(
+  age = 40,
+  bmi = 28,
+  children = 2,
+  sex = "male",
+  smoker = "no",
+  region = "southwest"
+)
+
+predict(modelo, nuevo, interval = "confidence")
+
+```
+
+## 5.12 Predicción de un nuevo valor (puntual e intervalar)
+
+La predicción de un nuevo valor permite estimar el costo del seguro médico para un individuo con características específicas, considerando tanto la incertidumbre del modelo como la variabilidad individual. Por esta razón, el intervalo de predicción suele ser más amplio que el intervalo de confianza de la media.
+
+```{r}
+predict(modelo, nuevo, interval = "prediction")
+```
+
+# **6. REPLICABILIDAD DEL TUTORIAL**
+
+Para replicar este tutorial con un conjunto de datos distinto, el estudiante debe mantener la estructura general del documento y modificar únicamente los siguientes elementos:
+
+- El archivo de entrada en la función `read.csv()`, reemplazando el nombre del archivo por el nuevo conjunto de datos.
+- La definición de la variable respuesta y las variables explicativas en la fórmula del modelo dentro de la función `lm()`.
+
+El resto del código, incluyendo la exploración de datos, la verificación de supuestos, las pruebas de hipótesis y los procedimientos de estimación y predicción, puede mantenerse sin cambios, lo que garantiza la reproducibilidad del análisis.
+
+# **7. CONCLUSIONES**
+
+En el presente tutorial se aplicó la regresión lineal múltiple para analizar los factores que influyen en el costo del seguro médico. A través del uso del lenguaje R, se realizó un análisis exploratorio de los datos, se ajustó un modelo de regresión, se verificaron los principales supuestos estadísticos y se llevaron a cabo pruebas de hipótesis, estimaciones y predicciones.
+
+El desarrollo de este tutorial permite al estudiante comprender la utilidad de la regresión lineal múltiple como herramienta para el análisis y la predicción en contextos reales, así como replicar el procedimiento utilizando otros conjuntos de datos, manteniendo una estructura clara y reproducible.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

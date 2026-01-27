@@ -41,16 +41,18 @@ Esta técnica es ampliamente utilizada en áreas como economía, salud, ingenier
 
 ### Objetivo general
 
-- **Comprender y aplicar** la regresión lineal múltiple mediante el desarrollo de un tutorial práctico en R.
+- Capacitar al lector para que pueda diseñar, ejecutar, validar e interpretar los modelos de regresión lineal múltiple utilizando el lenguaje R, extrapolando así a problemas reales o de investigaciones requeridas.
 
 ### Objetivos específicos
 
-- **Identificar** la variable respuesta y las variables explicativas del conjunto de datos.
-- **Realizar** un análisis exploratorio univariado y bivariado.
-- **Ajustar** un modelo de regresión lineal múltiple en R.
-- **Verificar** los supuestos estadísticos del modelo.
-- **Interpretar** los coeficientes de regresión.
-- **Realizar** estimaciones y predicciones utilizando el modelo ajustado.
+• Ejecutar un análisis exploratorio inicial de los datos requeridos, las variables (sean cuantitativas o cualitativas) necesarias, sus estructuras mediante la visualización, interpretación del mismo (análisis univariado) y la correlación existente entre dos variables (análisis bivariado).
+• Formular un modelo de RLM según la notación requerida, interpretando sus distintas componentes.
+• Desarrollar las etapas necesarias para la evaluación correcta del modelo.
+• Evaluar el ajuste del modelo mediante el Coeficiente de Determinación (R2).
+• Verificar el cumplimiento de los supuestos (normalidad, homocedasticidad e independencia de errores).
+• Aplicar las medidas necesarias en caso no se verifique el cumplimiento de alguno de los supuestos.
+• Predecir valores futuros para nuevas observaciones, comprendiendo los intervalos de confianza de estas predicciones (para la media) y los intervalos de predicción (para casos puntuales).
+
 
 ---
 
@@ -66,10 +68,10 @@ El análisis de estos factores permite comprender la variabilidad de los costos 
 
 ## 3.2 Origen del dataset
 
-El conjunto de datos utilizado fue obtenido de la plataforma **Kaggle**, una fuente pública de datasets para análisis de datos y aprendizaje automático.
+El siguiente dataset titulado “Medical Cost Personal Datasets” ha sido obtenido del siguiente enlace https://www.kaggle.com/datasets/mirichoi0218/insurance.
+Este dataset ha sido extraido de un libro como tal el cual provee distintos datasets para una introducción a Machine Learning utilizando R. Sin embargo, lo utilizaremos para nuestro caso de RLM.
+Este trata acerca de la previsión de los gastos de seguros médicos en base a distintos factores, los cuales se explicarán a continuación.
 
-**Fuente:**  
-https://www.kaggle.com/datasets/mirichoi0218/insurance
 
 ---
 

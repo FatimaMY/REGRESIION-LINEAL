@@ -7,16 +7,21 @@ author: |
   Montes Yato, Fátima
 date: "`r Sys.Date()`"
 output:
+  pdf_document:
+    toc: true
+    toc_depth: 3
   html_document:
-    code_folding: show
     toc: true
     toc_depth: 3
     toc_float: true
+    code_folding: show
     theme:
       bg: "#F8F9FA"
       fg: "#343A40"
       primary: "#2C3E50"
 ---
+
+
 
 # **1. CARÁTULA**
 
@@ -45,13 +50,13 @@ Esta técnica es ampliamente utilizada en áreas como economía, salud, ingenier
 
 ### Objetivos específicos
 
-• Ejecutar un análisis exploratorio inicial de los datos requeridos, las variables (sean cuantitativas o cualitativas) necesarias, sus estructuras mediante la visualización, interpretación del mismo (análisis univariado) y la correlación existente entre dos variables (análisis bivariado).
-• Formular un modelo de RLM según la notación requerida, interpretando sus distintas componentes.
-• Desarrollar las etapas necesarias para la evaluación correcta del modelo.
-• Evaluar el ajuste del modelo mediante el Coeficiente de Determinación (R2).
-• Verificar el cumplimiento de los supuestos (normalidad, homocedasticidad e independencia de errores).
-• Aplicar las medidas necesarias en caso no se verifique el cumplimiento de alguno de los supuestos.
-• Predecir valores futuros para nuevas observaciones, comprendiendo los intervalos de confianza de estas predicciones (para la media) y los intervalos de predicción (para casos puntuales).
+-Ejecutar un análisis exploratorio inicial de los datos requeridos, las variables (sean cuantitativas o cualitativas) necesarias, sus estructuras mediante la visualización, interpretación del mismo (análisis univariado) y la correlación existente entre dos variables (análisis bivariado).
+-Formular un modelo de RLM según la notación requerida, interpretando sus distintas componentes.
+-Desarrollar las etapas necesarias para la evaluación correcta del modelo.
+-Evaluar el ajuste del modelo mediante el Coeficiente de Determinación (R2).
+-Verificar el cumplimiento de los supuestos (normalidad, homocedasticidad e independencia de errores).
+-Aplicar las medidas necesarias en caso no se verifique el cumplimiento de alguno de los supuestos.
+-Predecir valores futuros para nuevas observaciones, comprendiendo los intervalos de confianza de estas predicciones (para la media) y los intervalos de predicción (para casos puntuales).
 
 
 ---

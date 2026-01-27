@@ -21,14 +21,37 @@ output:
       primary: "#2C3E50"
 ---
 
-
-
 # **1. CARÁTULA**
 
-**Curso:** Estadística  
+**Curso:** Análisis de Regresión  
 **Tema:** Regresión Lineal Múltiple  
 **Herramienta:** RStudio  
 **Dataset:** Insurance (Kaggle)
+
+Todo trabajo riguroso requiere de pruebas estadísticas, estas varían de acuerdo al enfoque que se requiera.
+En tanto, en el mundo real, al observar un fenómeno que quisiéramos explicar este puede depender de una o
+múltiples variables así como sus observaciones, es así como intentamos comprender aquel fenómeno en base
+a la ocurrencia de estas observaciones y cómo se comportan. Sin embargo, algo que deberíamos comprender
+es que no todas las variables pueden estar relacionadas con el fenómeno e incluso aunque encontremos cierta
+relación, esto no indica la causalidad del fenómeno que queremos explicar; por lo tanto, existen algunas
+variables más significativas que otras las cuales tienen mayor “peso” en función al fenómeno descrito.
+Ahora hablemos de una de las técnicas estadísticas fundamentales o centrales dentro del análisis cuantitativo
+en cualquier disciplina que imaginemos, desde la estadística como tal, economía hasta las ciencias sociales.
+
+En sí, qué es lo que hace a esta técnica tan fundamental para poder comprender los fenómenos u “objetivos”
+de alguna investigación que querramos elaborar. Anteriormente se comentó acerca de que puede existir cierta
+relación entre una variable y otra, aunque sin ser causales una de la otra. La regresión lineal múltiple no solo
+abarca el análisis bivariado del fenómeno, ya que como se mencionó; un fenómeno real difícilmente puede ser
+explicado por una sola variable, sino múltiples. Entonces, la técnica que desde ahora llamaremos RLM nos
+permite trascender o ir más allá de las simples relaciones, permitiendo aislar el efecto a una variable objetivo
+en función a cierta variable mientras las otras se mantienen constantes, controlando también el error. Todo
+esto se logra mediante un modelo que será definido más adelante.
+Para el contexto de este documento en formato de tutorial, se espera que finalizado el mismo el lector sea
+capaz de comprender la importancia de la RLM, siendo esta el primer escalón hacia otras técnicas más
+avanzadas. Es entonces, de vital importancia explicar los conceptos que acabarcan la misma y cómo se
+aplican a este ejemplo en concreto utilizando el software RStudio y cómo los resultados e interpretaciones
+del mismo llegan a ser una gran competencia dentro de cualquier campo en el que nos desarrollemos.
+
 
 ---
 
@@ -50,14 +73,13 @@ Esta técnica es ampliamente utilizada en áreas como economía, salud, ingenier
 
 ### Objetivos específicos
 
--Ejecutar un análisis exploratorio inicial de los datos requeridos, las variables (sean cuantitativas o cualitativas) necesarias, sus estructuras mediante la visualización, interpretación del mismo (análisis univariado) y la correlación existente entre dos variables (análisis bivariado).
--Formular un modelo de RLM según la notación requerida, interpretando sus distintas componentes.
--Desarrollar las etapas necesarias para la evaluación correcta del modelo.
--Evaluar el ajuste del modelo mediante el Coeficiente de Determinación (R2).
--Verificar el cumplimiento de los supuestos (normalidad, homocedasticidad e independencia de errores).
--Aplicar las medidas necesarias en caso no se verifique el cumplimiento de alguno de los supuestos.
--Predecir valores futuros para nuevas observaciones, comprendiendo los intervalos de confianza de estas predicciones (para la media) y los intervalos de predicción (para casos puntuales).
-
+- Ejecutar un análisis exploratorio inicial de los datos requeridos, las variables (sean cuantitativas o cualitativas) necesarias, sus estructuras mediante la visualización, interpretación del mismo (análisis univariado) y la correlación existente entre dos variables (análisis bivariado).
+- Formular un modelo de RLM según la notación requerida, interpretando sus distintas componentes.
+- Desarrollar las etapas necesarias para la evaluación correcta del modelo.
+- Evaluar el ajuste del modelo mediante el Coeficiente de Determinación (R2).
+- Verificar el cumplimiento de los supuestos (normalidad, homocedasticidad e independencia de errores).
+- Aplicar las medidas necesarias en caso no se verifique el cumplimiento de alguno de los supuestos.
+- Predecir valores futuros para nuevas observaciones, comprendiendo los intervalos de confianza de estas predicciones (para la media) y los intervalos de predicción (para casos puntuales).
 
 ---
 
@@ -73,24 +95,26 @@ El análisis de estos factores permite comprender la variabilidad de los costos 
 
 ## 3.2 Origen del dataset
 
-El siguiente dataset titulado “Medical Cost Personal Datasets” ha sido obtenido del siguiente enlace https://www.kaggle.com/datasets/mirichoi0218/insurance.
+El siguiente dataset titulado “Medical Cost Personal Datasets” ha sido obtenido del siguiente enlace *https://www.kaggle.com/datasets/mirichoi0218/insurance.*
 Este dataset ha sido extraido de un libro como tal el cual provee distintos datasets para una introducción a Machine Learning utilizando R. Sin embargo, lo utilizaremos para nuestro caso de RLM.
 Este trata acerca de la previsión de los gastos de seguros médicos en base a distintos factores, los cuales se explicarán a continuación.
-
 
 ---
 
 ## 3.3 Definición de variables
 
-| Variable | Descripción | Tipo |
-|--------|------------|------|
-| `charges` | Costo del seguro médico | Cuantitativa continua (respuesta) |
-| `age` | Edad del asegurado (años) | Cuantitativa discreta |
-| `bmi` | Índice de masa corporal | Cuantitativa continua |
-| `children` | Número de hijos dependientes | Cuantitativa discreta |
-| `sex` | Sexo del asegurado | Cualitativa nominal |
-| `smoker` | Condición de fumador | Cualitativa dicotómica |
-| `region` | Región geográfica | Cualitativa nominal |
+| Variable | Tipo de variable            | Observación / Contenido                                                                 |
+|----------------------|-----------------------------|------------------------------------------------------------------------------------------|
+| `age`                | Cuantitativa discreta       | Edad del beneficiario directo, medida en años completos.                                 |
+| `sex`                | Cualitativa nominal         | Sexo del beneficiario: Hombre (1) o Mujer (0).                                           |
+| `bmi`                | Cuantitativa continua       | Índice de masa corporal calculado a partir del peso y la altura (kg/m²).                 |
+| `children`           | Cuantitativa discreta       | Número de hijos o personas a cargo cubiertas por el seguro médico.                        |
+| `smoker`             | Cualitativa nominal         | Indica si el asegurado es fumador (1) o no fumador (0).                                  |
+| `region`             | Cualitativa nominal         | Región de residencia del asegurado en EE.UU.: noreste, sureste, suroeste o noroeste.     |
+| `charges`            | Cuantitativa continua       | Gastos médicos individuales facturados por el seguro médico (variable respuesta).       |
+
+En el presente estudio, la variable `charges` se considera como la variable respuesta, mientras que las demás variables actúan como variables explicativas dentro del modelo de regresión lineal múltiple.
+
 
 ---
 
@@ -191,7 +215,7 @@ bptest(modelo)
 El supuesto de independencia establece que los errores del modelo no están correlacionados entre sí. Dado que los datos corresponden a observaciones individuales y no a una serie temporal, se asume que este supuesto se cumple.
 
 ```{r}
-# Dado que los datos corresponden a observaciones individuales y no a series temporales, se asume independencia de los errores.
+# CODIGOOOOOOOO
 ```
 
 ## 5.8 Transformación de datos (si aplica)
@@ -199,10 +223,7 @@ El supuesto de independencia establece que los errores del modelo no están corr
 En caso de que alguno de los supuestos del modelo no se cumpla, puede considerarse una transformación de la variable respuesta con el objetivo de mejorar el ajuste del modelo y la validez de las inferencias estadísticas. Una transformación común es el uso del logaritmo natural de la variable `charges`.
 
 ```{r}
-# Ejemplo de transformación logarítmica (opcional)
-# modelo_log <- lm(log(charges) ~ age + bmi + children + sex + smoker + region,
-#                  data = insurance)
-
+# CODIGOOOOOOOO
 ```
 
 ## 5.9 Prueba de hipótesis global
@@ -210,7 +231,7 @@ En caso de que alguno de los supuestos del modelo no se cumpla, puede considerar
 La prueba de hipótesis global evalúa si el modelo de regresión lineal múltiple es estadísticamente significativo en su conjunto. Esta prueba contrasta la hipótesis nula de que todos los coeficientes de regresión, excepto el intercepto, son iguales a cero.
 
 ```{r}
-# La prueba F se obtiene del resumen del modelo
+# CODIGOOOOOOOO
 summary(modelo)
 ```
 
@@ -219,7 +240,7 @@ summary(modelo)
 
 Las pruebas de hipótesis individuales permiten evaluar la significancia estadística de cada uno de los coeficientes de regresión del modelo. Estas pruebas contrastan la hipótesis nula de que el coeficiente asociado a una variable explicativa es igual a cero, manteniendo constantes las demás variables.
 ```{r}
-# Las pruebas t individuales se obtienen del resumen del modelo
+# CODIGOOOOOOOO
 summary(modelo)
 ```
 

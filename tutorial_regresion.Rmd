@@ -82,7 +82,6 @@ factores, lo que permite obtener modelos más realistas y cercanos a
 situaciones del mundo real.
 
 
-leo full gepeto
 
 Esta técnica es ampliamente utilizada en áreas como economía, salud,
 ingeniería y ciencias sociales, ya que facilita la explicación de

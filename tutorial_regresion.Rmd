@@ -64,7 +64,8 @@ editor_options:
     \end{table}
     \vspace{0.5cm}
     \textbf{GRUPO:} \text{2} \par
-    \textbf{DOCENTE A CARGO:} \text{Gamboa U., Jesus E.}
+    \textbf{DOCENTE A CARGO:} \text{Gamboa U., Jesus E.} \par
+    \textbf{FECHA DE ENTREGA:} \text{Domingo 1 de Febrero del 2026}
     \vfill
     {\large Lima, 2026} \par
 }

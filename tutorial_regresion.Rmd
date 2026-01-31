@@ -1,14 +1,7 @@
 ---
-title: "Tutorial de Regresión Lineal Múltiple en R"
-author: |
-  **Grupo de Análisis de Regresión**  
-  Maguiña Tabory Leonardo  
-  Cruzado Flores Abel  
-  Montes Yato, Fátima
-date: "`r Sys.Date()`"
 output:
   pdf_document:
-    toc: true
+    toc: false
     toc_depth: 3
   html_document:
     toc: true
@@ -24,19 +17,67 @@ editor_options:
     wrap: 72
 ---
 
-# **1. CARÁTULA**
+\begin{titlepage}
 
-**Curso:** Análisis de Regresión\
-**Tema:** Regresión Lineal Múltiple\
-**Herramienta:** RStudio\
-**Dataset:** Insurance (Kaggle)
+{ \centering 
+    {\huge \textbf{UNIVERSIDAD NACIONAL AGRARIA LA MOLINA \\[0.5cm]}} \par
+    \vspace{1.0cm}
+    {\LARGE \textbf{Departamento de Estadística e Informática}} \par
+    \vspace {0.5cm}
+    {\LARGE \textbf{Trabajo Grupal - Análisis de Regresión}} \par
+} 
 
+\vspace{1cm}
+
+{ \centering
+    \includegraphics[width=5.0cm]{images/clipboard-151031590.png} \par
+}
+
+\vspace{1.0cm}
+
+{ \centering
+    {\Large \textbf{Tutorial de Regresión}} \par
+    \vspace{0.0cm}
+    {\Large Análisis del Dataset "Insurance"} \par
+}
+
+\vspace{0.5cm}
+
+
+{ \centering
+    \textbf{INTEGRANTES:} \par
+    \vspace{0.5cm}
+    \renewcommand{\arraystretch}{1.5}
+    \begin{table}[h]
+        \centering
+        \begin{tabular}{|p{9cm}|c|}
+            \hline
+            \textbf{Apellidos y Nombres} & \textbf{Código} \\
+            \hline
+            Maguiña Tabory, Leonardo & 20241388 \\
+            \hline
+            Cruzado Flores, Abel & 202\\
+            \hline
+            Montes Yato, Fátima & 2024 \\
+            \hline
+        \end{tabular}
+    \end{table}
+    \vspace{0.5cm}
+    \textbf{GRUPO:} \text{2} \par
+    \textbf{DOCENTE A CARGO:} \text{Gamboa U., Jesus E.}
+    \vfill
+    {\large Lima, 2026} \par
+}
+
+\end{titlepage}
+
+\newpage \tableofcontents \newpage
 
 ------------------------------------------------------------------------
 
-# **2. INTRODUCCIÓN**
+# **1. INTRODUCCIÓN**
 
-## 2.1 Importancia de la regresión lineal múltiple
+## 1.1 Importancia de la regresión lineal múltiple
 
 Todo trabajo riguroso requiere de pruebas estadísticas, estas varían de
 acuerdo al enfoque que se requiera. En tanto, en el mundo real, al
@@ -81,8 +122,6 @@ simple, esta metodología considera el efecto conjunto de múltiples
 factores, lo que permite obtener modelos más realistas y cercanos a
 situaciones del mundo real.
 
-
-
 Esta técnica es ampliamente utilizada en áreas como economía, salud,
 ingeniería y ciencias sociales, ya que facilita la explicación de
 fenómenos complejos, la predicción de resultados futuros y la toma de
@@ -92,7 +131,7 @@ verificar supuestos estadísticos y comunicar resultados de manera clara.
 
 ------------------------------------------------------------------------
 
-## 2.2 Objetivos de aprendizaje
+## 1.2 Objetivos de aprendizaje
 
 ### Objetivo general
 
@@ -124,9 +163,9 @@ verificar supuestos estadísticos y comunicar resultados de manera clara.
 
 ------------------------------------------------------------------------
 
-# **3. CASO DE ESTUDIO (DATASET)**
+# **2. CASO DE ESTUDIO (DATASET)**
 
-## 3.1 Descripción del problema
+## 2.1 Descripción del problema
 
 En este tutorial se analiza un conjunto de datos relacionado con los
 costos de seguros médicos individuales. El objetivo principal es
@@ -139,7 +178,7 @@ una persona en función de sus características.
 
 ------------------------------------------------------------------------
 
-## 3.2 Origen del dataset
+## 2.2 Origen del dataset
 
 El siguiente dataset titulado “Medical Cost Personal Datasets” ha sido
 obtenido del siguiente enlace
@@ -152,10 +191,10 @@ distintos factores, los cuales se explicarán a continuación.
 
 ------------------------------------------------------------------------
 
-## 3.3 Definición de variables
+## 2.3 Definición de variables
 
 | Variable | Tipo de variable | Observación / Contenido |
-|---------------|---------------|------------------------------------------|
+|-------------------|-------------------|----------------------------------|
 | `age` | Cuantitativa discreta | Edad del beneficiario directo, medida en años completos. |
 | `sex` | Cualitativa nominal | Sexo del beneficiario: Hombre (1) o Mujer (0). |
 | `bmi` | Cuantitativa continua | Índice de masa corporal calculado a partir del peso y la altura (kg/m²). |
@@ -170,9 +209,9 @@ variables explicativas dentro del modelo de regresión lineal múltiple.
 
 ------------------------------------------------------------------------
 
-# **4. EXPLORACIÓN DE DATOS**
+# **3. EXPLORACIÓN DE DATOS**
 
-## 4.1 Importación del dataset
+## 3.1 Importación del dataset
 
 La importación del dataset permite verificar que los datos se han
 cargado correctamente y observar las primeras observaciones del conjunto
@@ -185,7 +224,7 @@ head(insurance)
 
 ------------------------------------------------------------------------
 
-## 4.2 Resumen descriptivo univariado
+## 3.2 Resumen descriptivo univariado
 
 El análisis descriptivo univariado permite estudiar cada variable de
 forma individual, identificando medidas de tendencia central, dispersión
@@ -195,9 +234,10 @@ estadísticas.
 
 ```{r}
 summary(insurance)
+
 ```
 
-## 4.3 Resumen descriptivo bivariado
+## 3.3 Resumen descriptivo bivariado
 
 El análisis bivariado permite explorar la relación entre la variable
 respuesta y las variables explicativas, ayudando a identificar patrones
@@ -213,9 +253,9 @@ boxplot(charges ~ smoker,
 
 ```
 
-# **5.MODELAMIENTO ESTADÍSTICO**
+# **4.MODELAMIENTO ESTADÍSTICO**
 
-## 5.1 Formulación del modelo
+## 4.1 Formulación del modelo
 
 El modelo de regresión lineal múltiple propuesto es:
 
@@ -231,7 +271,7 @@ donde:
 -   $\varepsilon$ representa el término de error aleatorio, el cual
     recoge la variabilidad no explicada por el modelo.
 
-## 5.2 Ajuste del modelo en R
+## 4.2 Ajuste del modelo en R
 
 Antes de ajustar el modelo, es necesario convertir las variables
 cualitativas a factores para que R las trate adecuadamente dentro del
@@ -250,7 +290,7 @@ modelo <- lm(charges ~ age + bmi + children + sex + smoker + region,
 summary(modelo)
 ```
 
-## 5.3 Interpretación de los coeficientes de regresión
+## 4.3 Interpretación de los coeficientes de regresión
 
 Cada coeficiente estimado del modelo de regresión lineal múltiple
 representa el cambio promedio esperado en el costo del seguro médico
@@ -264,7 +304,7 @@ coeficientes se interpretan en relación con una categoría de referencia,
 mostrando la diferencia promedio en el costo del seguro médico respecto
 a dicha categoría.
 
-## 5.4 Coeficiente de determinación
+## 4.4 Coeficiente de determinación
 
 El coeficiente de determinación $R^2$ indica la proporción de la
 variabilidad total del costo del seguro médico que es explicada por el
@@ -275,7 +315,7 @@ de $R^2$ sugiere un buen ajuste del modelo a los datos observados.
 summary(modelo)$r.squared
 ```
 
-## 5.5 Verificación del supuesto de normalidad de errores
+## 4.5 Verificación del supuesto de normalidad de errores
 
 Esta prueba permite evaluar si los residuos del modelo de regresión
 siguen una distribución normal, supuesto necesario para la validez de
@@ -285,7 +325,7 @@ las inferencias estadísticas.
 shapiro.test(residuals(modelo))
 ```
 
-## 5.6 Verificación del supuesto de homocedasticidad
+## 4.6 Verificación del supuesto de homocedasticidad
 
 La homocedasticidad implica que la varianza de los errores del modelo es
 constante para todos los valores de las variables explicativas. Este
@@ -298,7 +338,7 @@ bptest(modelo)
 
 ```
 
-## 5.7 Verificación del supuesto de independencia de errores
+## 4.7 Verificación del supuesto de independencia de errores
 
 El supuesto de independencia establece que los errores del modelo no
 están correlacionados entre sí. Dado que los datos corresponden a
@@ -309,7 +349,7 @@ supuesto se cumple.
 # CODIGOOOOOOOO
 ```
 
-## 5.8 Transformación de datos (si aplica)
+## 4.8 Transformación de datos (si aplica)
 
 En caso de que alguno de los supuestos del modelo no se cumpla, puede
 considerarse una transformación de la variable respuesta con el objetivo
@@ -321,7 +361,7 @@ de la variable `charges`.
 # CODIGOOOOOOOO
 ```
 
-## 5.9 Prueba de hipótesis global
+## 4.9 Prueba de hipótesis global
 
 La prueba de hipótesis global evalúa si el modelo de regresión lineal
 múltiple es estadísticamente significativo en su conjunto. Esta prueba
@@ -333,7 +373,7 @@ excepto el intercepto, son iguales a cero.
 summary(modelo)
 ```
 
-## 5.10 Pruebas de hipótesis individuales
+## 4.10 Pruebas de hipótesis individuales
 
 Las pruebas de hipótesis individuales permiten evaluar la significancia
 estadística de cada uno de los coeficientes de regresión del modelo.
@@ -346,7 +386,7 @@ constantes las demás variables.
 summary(modelo)
 ```
 
-## 5.11 Estimación de una media (puntual e intervalar)
+## 4.11 Estimación de una media (puntual e intervalar)
 
 La estimación de una media permite obtener el valor promedio esperado
 del costo del seguro médico para un individuo con características
@@ -367,7 +407,7 @@ predict(modelo, nuevo, interval = "confidence")
 
 ```
 
-## 5.12 Predicción de un nuevo valor (puntual e intervalar)
+## 4.12 Predicción de un nuevo valor (puntual e intervalar)
 
 La predicción de un nuevo valor permite estimar el costo del seguro
 médico para un individuo con características específicas, considerando
@@ -379,7 +419,7 @@ intervalo de confianza de la media.
 predict(modelo, nuevo, interval = "prediction")
 ```
 
-# **6. REPLICABILIDAD DEL TUTORIAL**
+# **5. REPLICABILIDAD DEL TUTORIAL**
 
 Para replicar este tutorial con un conjunto de datos distinto, el
 estudiante debe mantener la estructura general del documento y modificar
@@ -395,7 +435,7 @@ de supuestos, las pruebas de hipótesis y los procedimientos de
 estimación y predicción, puede mantenerse sin cambios, lo que garantiza
 la reproducibilidad del análisis.
 
-# **7. CONCLUSIONES**
+# **6. CONCLUSIONES**
 
 En el presente tutorial se aplicó la regresión lineal múltiple para
 analizar los factores que influyen en el costo del seguro médico. A

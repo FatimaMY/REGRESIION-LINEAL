@@ -318,6 +318,31 @@ summary(modelo)$r.squared
 
 ## 4.5 Verificación del supuesto de normalidad de errores
 
+Primero verificamos mediante un histograma que la distribución de los
+residuales se parezca a una distribución Normal.
+
+```{r}
+library(ggplot2)
+residuales <- modelo$residuals |> as.vector()
+data.frame(residuales) |>
+ggplot(aes(x=residuales,))+
+geom_histogram(aes(y=..density..),
+bins= round(1+3.3*log10(nrow(insurance))),
+fill= "dodgerblue2",
+alpha=0.6)+
+geom_density(size=1.5)+
+labs(x="Residuales",y="Densidad")+
+theme_minimal()
+
+residuales |> density() |> lines()
+
+residuales |> hist(freq=FALSE,
+main="Histograma de los residuales",
+xlab="Residuales",
+ylab="Densidad",
+col ="dodgerblue2")
+```
+
 Esta prueba permite evaluar si los residuos del modelo de regresión
 siguen una distribución normal, supuesto necesario para la validez de
 las inferencias estadísticas.

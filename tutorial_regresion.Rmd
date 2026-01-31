@@ -30,7 +30,7 @@ editor_options:
 \vspace{1cm}
 
 { \centering
-    \includegraphics[width=5.0cm]{images/clipboard-151031590.png} \par
+    \includegraphics[width=5.0cm]{} \par
 }
 
 \vspace{1.0cm}

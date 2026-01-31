@@ -321,6 +321,10 @@ summary(modelo)$r.squared
 Primero verificamos mediante un histograma que la distribución de los
 residuales se parezca a una distribución Normal.
 
+Esto con la finalidad de tener una conclusión más fuerte, sobre el cumplimiento supuesto de normalidad de errores, cual es que los errores se distribuyen normalmente. supuesto necesario para la validez de
+las inferencias estadísticas.
+$$ \epsilon_i \sim N(0, \sigma^2)$$
+
 ```{r}
 library(ggplot2)
 
@@ -337,10 +341,15 @@ ggplot(data.frame(residuales), aes(x = residuales)) +
        y = "Densidad") +
   theme_minimal()
 ```
+Se aprecia que los errores no se acercan a una distribución normal, en cambio, presenta una marcada asímetria positiva, además la distribución muestra una posible forma leptocúrtica, por la forma apuntalada
+en el centro, y la cola pesada hacía la derecha.
 
-Esta prueba permite evaluar si los residuos del modelo de regresión
-siguen una distribución normal, supuesto necesario para la validez de
-las inferencias estadísticas.
+Usamos ahora un gráfico de probabilidad normal, con la finalidad de detecar outliers, asímetria y curtosis.
+
+```{r}
+qqnorm(residuales); qqline(residuales)
+
+```
 
 ```{r}
 shapiro.test(residuals(modelo))

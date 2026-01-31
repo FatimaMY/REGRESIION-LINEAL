@@ -30,7 +30,7 @@ editor_options:
 \vspace{1cm}
 
 { \centering
-    \includegraphics[width=5.0cm]{} \par
+    \includegraphics[width=5.0cm]{figures/logo_unalm.png} \par
 }
 
 \vspace{1.0cm}
@@ -56,9 +56,9 @@ editor_options:
             \hline
             Maguiña Tabory, Leonardo & 20241388 \\
             \hline
-            Cruzado Flores, Abel & 202\\
+            Cruzado Flores, Abel & 20240000\\
             \hline
-            Montes Yato, Fátima & 2024 \\
+            Montes Yato, Fátima & 20220510 \\
             \hline
         \end{tabular}
     \end{table}
@@ -323,24 +323,19 @@ residuales se parezca a una distribución Normal.
 
 ```{r}
 library(ggplot2)
-residuales <- modelo$residuals |> as.vector()
-data.frame(residuales) |>
-ggplot(aes(x=residuales,))+
-geom_histogram(aes(y=..density..),
-bins= round(1+3.3*log10(nrow(insurance))),
-fill= "dodgerblue2",
-alpha=0.6)+
-geom_density(size=1.5)+
-labs(x="Residuales",y="Densidad")+
-theme_minimal()
 
-residuales |> density() |> lines()
+residuales <- residuals(modelo)
 
-residuales |> hist(freq=FALSE,
-main="Histograma de los residuales",
-xlab="Residuales",
-ylab="Densidad",
-col ="dodgerblue2")
+ggplot(data.frame(residuales), aes(x = residuales)) +
+  geom_histogram(aes(y = ..density..),
+                 bins = round(1 + 3.3 * log10(nrow(insurance))),
+                 fill = "dodgerblue2",
+                 alpha = 0.6) +
+  geom_density(size = 1.2) +
+  labs(title = "Histograma y densidad de los residuos",
+       x = "Residuos",
+       y = "Densidad") +
+  theme_minimal()
 ```
 
 Esta prueba permite evaluar si los residuos del modelo de regresión

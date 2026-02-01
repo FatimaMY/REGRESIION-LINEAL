@@ -199,7 +199,7 @@ distintos factores, los cuales se explicarán a continuación.
 | Variable | Tipo de variable | Observación / Contenido |
 |-------------------|-------------------|----------------------------------|
 | `age` | Cuantitativa discreta | Edad del beneficiario directo, medida en años completos. |
-| `sex` | Cualitativa nominal | Sexo del beneficiario: Hombre (1) o Mujer (0). |
+| `sex` | Cualitativa nominal(factor)| Sexo del beneficiario: Hombre o Mujer. |
 | `bmi` | Cuantitativa continua | Índice de masa corporal calculado a partir del peso y la altura (kg/m²). |
 | `children` | Cuantitativa discreta | Número de hijos o personas a cargo cubiertas por el seguro médico. |
 | `smoker` | Cualitativa nominal | Indica si el asegurado es fumador (1) o no fumador (0). |
@@ -428,14 +428,15 @@ más importante.
 
 ## 4.4 Coeficiente de determinación
 
-El coeficiente de determinación $R^2$ indica la proporción de la
+El coeficiente de determinación $R^2$ ajustado indica la proporción de la
 variabilidad total del costo del seguro médico que es explicada por el
 conjunto de variables explicativas incluidas en el modelo. Un valor alto
-de $R^2$ sugiere un buen ajuste del modelo a los datos observados.
+de $R^2$ ajustado sugiere un buen ajuste del modelo a los datos observados.
 
 ```{r}
 summary(modelo)$adj.r.squared
 ```
+el $R^2$ ajustado fue 0.748783, lo que implica que el modelo explica el 74.88% de la variabilidad del costo del seguro médico, lo cual confirma que las variables incorporadas aportan información relevante. En conjunto, estos resultados evidencian que la regresión lineal múltiple propuesta es útil para describir y predecir los costos del seguro médico.
 
 ## 4.5 Verificación del supuesto de normalidad de errores
 
@@ -661,8 +662,7 @@ Para solucionar el problema de la interpretación del gráfico anterior, haremos
 
 ```{r}
 library(ggfortify)
-library(pacman)
-p_load(TSA)
+library(TSA)
 residuales |>
 TSA::acf(lag = 18, plot=F) |>
 autoplot() +
@@ -741,12 +741,58 @@ obtenemos sus coeficientes para tener la ecuación estimada
 ```{r}
 modelo_log %>% coef()
 ```
-$$log(y) = 7.03+0.035X_1 + 0.013X_2 + 0.102X_3 - 0.075X_4 + 1.554 X_5 $$
-- 0.035:  Por cada año adicional de edad, la mediana de los costos médicos aumenta en 3.52%, manteniendo constantes las demás variables.
+$$log(y) = 7.03+0.035X_1 + 0.011X_2 + 0.102X_3 - 0.075X_4 + 1.550 X_5 $$
+-   0.035:  Por cada año adicional de edad, la mediana de los costos médicos aumenta en 3.52%, manteniendo constantes las demás variables.
 
-Tests para verificar cumplimiento de los supuestos:
+-   0.011: Por cada unidad adicional en el índice de masa corporal $kg/m^2$, la mediana de los costos médicos aumenta en 1.09%, manteniendo constantes las demás variables
+
+-   0.102: Por cada hijo adicional cubierto por el seguro, la mediana de los costos médicos aumenta en 10.72%, manteniendo constantes las demás variables.
+-   0.075: Si el asegurado es hombre, la mediana de los costos médicos disminuye en 7.5%,
+manteniendo constantes las demás variables.
+-   1.550: Si el asegurado es fumador, la mediana de los costos médicos aumenta drásticamente en 155%, manteniendo constantes las demás variables.
 
 
+**Tests para verificar cumplimiento de los supuestos:**
+*Comprobación del supuesto de normalidad:*
+```{r}
+residuales_log <- modelo_log %>% residuals()
+residuales_log %>% shapiro.test()
+```
+-   **Hipótesis nula** $H_0$: los residuos siguen una distribución
+    Normal.\
+-   **Hipótesis alternativa** $H_1$: los residuos no siguen una
+    distribución Normal.
+
+Dado que el p-valor es muy pequeño $2.2\times 10^{16}$, siendo menor que  $\alpha = 0.05$
+hay pruebas para concluir estadísticamente que no cumple con el supuesto de normalidad.
+
+*Comprobación del supuesto de homocedasticidad:*
+```{r}
+bptest(modelo_log)
+```
+-   **Hipótesis nula** $H_0$: la varianza de los errores es constante
+    (existe homocedasticidad).\
+-   **Hipótesis alternativa** $H_1$: la varianza de los errores no es
+    constante (existe heterocedasticidad).
+
+No se cumple el supuesto de homocedasticidad.
+
+*comprobación del supuesto de independencia de errores* 
+
+```{r}
+dwtest(modelo_log)
+```
+-   **Hipótesis nula** $H_0$: no existe autocorrelación en los errores
+    (los residuos son independientes).\
+-   **Hipótesis alternativa** $H_1$: existe autocorrelación en
+    los errores.
+    
+se verifica dependencia de errores 
+
+**ADVERTENCIA**
+
+Si aún aplicando la transformación necesaria a nuestra variable objetivo, esta sigue sin cumplir con los supuestos, se deberían aplicar otras técnicas más avanzadas para hacer valer el modelo hecho, tales como bootstrapping (técnica de remuestreo que permite estimar la precisión del estimador). A pesar de ello, estas estimaciones y predicciones se realizaron de igual manera, pero con la advertencia de que los supuestos no han sido verificados a pesar de haberlos transformados.
+    
 ## 4.9 Prueba de hipótesis global
 
 La prueba de hipótesis global evalúa si el modelo de regresión lineal
@@ -891,32 +937,30 @@ relativamente altos, por lo tanto, las variables explicativas al
 formular el modelo tienen que ser cuantitativas de igual manera (si no
 lo son, se harán de forma binaria) sean cualitativas o no.
 
-1.  Como primer paso leeremos el dataset de interés, siendo la lectura
+##  5.1.  Como primer paso leeremos el dataset de interés, siendo la lectura
     de estos conocimiento previo con funciones tales como read.csv,
     read.csv2 o read_excel (del paquete readxl).
 
-```{r, eval=FALSE}
+```{r, eval=FALSE, echo = TRUE}
     datos = read.csv("mi_dataset.csv")
     library(readxl)
     datos = read_excel("mi_dataset.xlsx")
 ```
 
-2.  Luego se realizará un análisis descriptivo del dataset, esto nos
+##  5.2.  Luego se realizará un análisis descriptivo del dataset, esto nos
     permitirá obtener diferentes estadísticas, así como podemos realizar
     gráficos que nos permitirán analizar las variables de interés y cómo
     se comportan. Se hará un análisis exploratorio en general. Para
     nuestro caso se realizaron de la siguiente manera.
     Resumen descriptivo del dataset importado
 
-```{r, eval=FALSE}
+```{r, eval=FALSE, echo = TRUE}
 summary(datos)
 ```
 
-```         
 Boxplot básico de las variables que creamos necesarias
-```
 
-```{r, eval=FALSE}
+```{r, eval=FALSE, echo = TRUE}
 boxplot(var1 ~ var2,
         data = datos,
         main = "Título del boxplot comparando var1 con var2",
@@ -925,64 +969,60 @@ boxplot(var1 ~ var2,
 
 ```
 
-3.  Prosiguiendo con el tutorial, pasamos a la formulación del modelo de
+##  5.3.  Prosiguiendo con el tutorial, pasamos a la formulación del modelo de
     RLM. Como se había mencionado antes, la variable objetivo
     preferiblemente debe ser cuantitativa continua y si es discreta esta
     debe ser de valores altos. Luego, decidiremos qué variables podrían
     afectar a esta variable objetivo, teniendo así las variables
     independientes de nuestro modelo.
-
     Formulamos el modelo y su conversión a factor de ser necesaria
-
     Cada apartado del mismo han sido explicados en el documento
 
-```{r, eval=FALSE}
-modelo = lm(vartarget \~ var 1 + var 2 + var 3 + var 4, datos)
+```{r, eval=FALSE, echo = TRUE}
+modelo = lm(vartarget ~ var 1 + var 2 + var 3 + var 4, datos)
 ```
 
-```         
+        
 Luego podemos ver los coeficientes del modelo ajustado e
 interpretarlos
-```
 
-```{r, eval=FALSE}
+
+```{r, eval=FALSE, echo = TRUE}
 coef(modelo)
 ```
 
-4.  Como una continuación del anterior apartado, obtenemos el
+##  5.4.  Como una continuación del anterior apartado, obtenemos el
     coeficiente de determinación $R^2$, el cual nos indicará en qué
     proporción la variabilidad total de nuestra variable objetivo es
     explicada por las variables explicativas valga la redundancia
     elegidas del dataset. Si obtenemos un valor alto de este
     coeficiente, significa que se dio un buen ajuste del modelo con las
     observaciones del dataset.
-
     Obtenemos el coeficiente de determinación
 
-```{r,eval=FALSE}
-summary(modelo)\$r.squared
+```{r, eval=FALSE, echo = TRUE}
+summary(modelo)$r.squared
 ```
 
-5.  Como ya se explicó anteriormente, se necesitan verificar diferentes
+##  5.5.  Como ya se explicó anteriormente, se necesitan verificar diferentes
     supuestos acerca de los errores o residuales dentro del modelo, el
     primero será el de normalidad de errores.
-
     Para este primer supuesto se pueden verificar visualmente como con
     pruebas estadísticas. Primeramente, es necesario extraer los
     residuales de nuestro modelo.
 
-```{r, eval=FALSE}
+```{r, eval=FALSE, echo = TRUE}
 residuales = residuals(modelo)
 ```
 
-```         
+       
 Luego, podemos elaborar un histograma y densidad de estos residuales
 con el paquete ggplot2 siendo el código completamente adaptable al
 usuario del ejemplo ya hecho en el apartado del documento
 correspondiente.
-```
 
-```{r, eval=FALSE}
+
+```{r, eval=FALSE, echo = TRUE}
 library(ggplot2)
 library(dplyr)
 residuales |>
@@ -999,19 +1039,18 @@ residuales |>
 
 ```
 
-```         
+        
 Lo que se trata de encontrar es que este histograma sea lo más
 parecido a una distribución normal.
 
 Otra verificación gráfica puede hacerse con el gráfico de quantil vs
 quantil.
-```
 
-```{r, eval=FALSE}
+
+```{r, eval=FALSE, echo = TRUE}
 qqnorm(residuales); qqline(residuales)
 ```
 
-```         
 La verificación de este gráfico debe ser interpretar las
 observaciones tanto en la parte inicial como final de la línea que
 observamos, se busca que las observaciones sean lo más cercanas a la
@@ -1025,45 +1064,94 @@ determinar la veracidad de nuestra hipótesis nula o alterna
 detallada en el documento buscamos un pvalor alto para su
 verificación, por el contrario, si obtenemos uno menor que el nivel
 de significancia, se rechazará la hipótesis nula.
-```
 
-```{r, eval=FALSE}
+```{r, eval=FALSE, echo = TRUE}
 shapiro.test(residuals(modelo))
 ```
 
-6.  El segundo supuesto de Homocedasticidad: Indica que la varianza de
+##  5.6.  El segundo supuesto de Homocedasticidad: Indica que la varianza de
     los errores del modelo es constante.
-
     Primero cargamos el paquete necesario
 
-```{r, eval=FALSE}
+```{r, eval=FALSE, echo = TRUE}
 library(lmtest)
 ```
 
-```         
 De la misma manera que para la hipótesis nula y alterna del supuesto
 de normalidad, buscamos valores altos del pvalor para su
 verificación.
-```
 
-```{r, eval=FALSE}
+
+```{r, eval=FALSE, echo = TRUE}
 bptest(modelo)
 ```
 
-7.  Y por último el de independencia de errores: El cual establece que
-    los errores del modelo no están correlacionados entre sí.
+##  5.7.Y por último el de independencia de errores: El cual establece que
+  los errores del modelo no están correlacionados entre sí.
+Se crea un gráfico o correlograma para observar si existe algún patrón entre los residuales.
+```{r, eval=FALSE, echo = TRUE}
+data.frame(residuales) |> 
+ggplot(aes(x=1:nrow(insurance),y=residuales))+
+geom_point(size = 1.5) + geom_line()+ 
+geom_hline(yintercept=0)+ 
+labs(x = "Orden", y = "Residual", title = "Evaluación de independencia") + theme_minimal()
+```
+
+Si observamos que no se encuentran patrones en este gráfico podemos verificar de otra manera visual a continuación:
+```{r, eval=FALSE, echo = TRUE}
+library(ggfortify)
+library(pacman) 
+library(TSA)
+
+residuales |> 
+TSA::acf(lag = 18, plot=F) |> 
+autoplot() + 
+labs(x = "Desfase",y = "Autocorrelación") + 
+theme_minimal()
+```
+
+Si observamos que las autocorrelaciones se encuentran dentro de los límites de confianza, se afirma que cumple con el supuesto de independencia, si no fuese así, verificaremos completamente con la prueba estadística de Durbin-Watson
+```{r, eval=FALSE, echo = TRUE}
+library(lmtest) 
+dwtest(modelo)
+```
+En este apartado, la hipótesis nula y alternativa son diferentes (señaladas en la parte correspondiente del documento). Buscamos en resumen, pvalor mayor al nivel de significancia para que el supuesto de independencia de errores cumpla.
+
+##  5.8. Si verificamos hasta este punto que los supuestos no se cumplen, sobre todo los de normalidad y homocedasticidad, necesitamos transformar la variable objetivo, en la documentación se recomienda la transformación logarítmica, aunque esta depende de los resultados de los supuestos. 
+```{r, eval=FALSE, echo = TRUE}
+lm(log(vartarget) ~ var1 + var2 + var3 + var4, data = datos)
+summary(modelo_log)
+```
+##  5.9. Una vez transformado nuestro modelo, procedemos a verificar nuevamente los supuestos (normalidad, homocedasticidad e independencia de errores). Si se cumplen los supuestos con esta transformación, se proceden a realizar las estimaciones y predicciones respectivas con datos específicos de cada variable explicativa.
+
+##  5.10. Ejemplo de estimación de la media de la variable objetivo (puntual e intervalar) de un modelo transformado, en cuyo caso no haya sido necesaria la transformación solo se hará la misma con el modelo inicial.
+```{r, eval=FALSE, echo = TRUE}
+nuevo <- data.frame(var1 = n, 
+                    var2 = n,
+                    var3 = n, 
+                    var4 = n,)
+modelo_log |> predict(newdata = nuevo, interval = "confidence") |> exp()
+```
+Para esta estimación, no olvidar en la última parte, aplicar la transformación hecha.
+11. Predicción de un nuevo valor (puntual e intervalar) con el modelo transformado.
+```{r, eval=FALSE, echo = TRUE}
+modelo_log |> predict(newdata = nuevo, interval = "prediction") |> exp()
+```
 
 # **6. CONCLUSIONES**
 
-En el presente tutorial se aplicó la regresión lineal múltiple para
-analizar los factores que influyen en el costo del seguro médico. A
-través del uso del lenguaje R, se realizó un análisis exploratorio de
-los datos, se ajustó un modelo de regresión, se verificaron los
-principales supuestos estadísticos y se llevaron a cabo pruebas de
-hipótesis, estimaciones y predicciones.
+##  6.1. **Análisis exploratorio**:
+Mediante el análisis exploratorio de datos univaridos  se identificó que la variable respuesta (gastos médicos), presentó una asimetría positiva muy notable, con una cola larga hacía la derecha y valores atípicos. Por otro lado el análisis bivariado permitió visualizar las correlaciones entre variables explicaste con más influencia, como el hábito de fumar, yla edad fueron variables con la mayor influencia inicial sobre el aumento de la variable respuesta.
 
-El desarrollo de este tutorial permite al estudiante comprender la
-utilidad de la regresión lineal múltiple como herramienta para el
-análisis y la predicción en contextos reales, así como replicar el
-procedimiento utilizando otros conjuntos de datos, manteniendo una
-estructura clara y reproducible.
+##  6.2. **Formulación e interpretación del modelo**:
+Se formuló el modelo de regresión lineal multiple que permitió, notar el necesario ajuste, que después de realizar el ajuste nos permitió conocer que la variable smoker,para los sí fumadores, era el predictor más influyente en el último modelo hecho, incremenetando drásticamente la variable respuesta, a comparación de los no fumadores.
+
+##  6.3 **Ajuste y supuestos**:
+El modelo inicial tuvo un $R^2$ ajustado del 74.88%, lo que indicaba una explicación de variabilidad de los datos muy aceptable. Sin embargo, a lrealizar los test de cumplimiento de supuestos, se concluyó que no era fiable ya que no cumplió con 2 de los 3 supuestos, siendo el de independencia de errores el que si cumplió.
+
+##  6.4 **Aplicación de medidas correctivas**:
+Debido al incumplimiento de los supuesto, se trató de corregir los errores, aplicando una transformación de log a la variable respuesta de cargos médicos. Lo que nos dió un incremento del coeficiente de determinación(76.8%), sin embargo, los supuestos se mantuvieron como en el modelo anterior.
+
+##  6.5 **Predicciones**:
+
+Se predijeron costos médicos para nuevos perfiles de asegurados utilizando el modelo transformado,  estableciendo un valor ajustado e intervalo de confianza, sin embargo avisando de las advertencias correspondientes de las predicciones al no cumplir con 2 de los 3 supuestos.

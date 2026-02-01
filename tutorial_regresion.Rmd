@@ -333,7 +333,7 @@ donde:
 
 -   $\beta_0$: es el intercepto del modelo.
 
--   $\beta_1, \beta_2, \dots, \beta_6$: son los coeficientes de
+-   $\beta_1, \beta_2, \dots, \beta_5$: son los coeficientes de
     regresión asociados a cada variable explicativa.
 
 -   $X_1$ : Edad del beneficiario directo, medida en años completos.
@@ -787,7 +787,7 @@ dwtest(modelo_log)
 -   **Hipótesis alternativa** $H_1$: existe autocorrelación en
     los errores.
     
-se verifica dependencia de errores 
+se verifica independencia de errores 
 
 **ADVERTENCIA**
 
@@ -892,9 +892,9 @@ modelo_log %>%  predict(newdata = nuevo, interval = "confidence") %>%  exp()
 El intervalo de confianza obtenido permite estimar el **costo médico
 promedio esperado** para un individuo con las características
 especificadas (edad 40 años, BMI 28, 2 hijos, hombre, no fumador ). El modelo predice un gasto medio
-aproximado de **8103.318 unidades monetarias**. Además, con un nivel de
+aproximado de **6868.017 unidades monetarias**. Además, con un nivel de
 confianza del 95%, se concluye que el verdadero costo promedio para
-personas con este perfil se encuentra entre **7528.774** y **8677.862**.
+personas con este perfil se encuentra entre **6583.028** y **7165.343**.
 Este intervalo refleja únicamente la incertidumbre asociada a la
 estimación de la media poblacional, por lo que es más estrecho que un
 intervalo de predicción individual.
@@ -909,17 +909,17 @@ intervalo de confianza de la media.
 
 ```{r}
 
-modelo_log %>%  predict(newdata = nuevo, interval = "prediction") %>%  exp()
+(modelo_log %>%  predict(newdata = nuevo, interval = "prediction") %>%  exp())
 ```
 
 El intervalo de predicción obtenido permite estimar el rango en el que
 podría ubicarse el **costo médico de un caso individual específico** con
 las características dadas (edad 40 años, BMI 28, 2 hijos, hombre, no
 fumador). El modelo predice un gasto
-aproximado de **8103.318 unidades monetarias**, pero debido a la
+aproximado de **6868.017 unidades monetarias**, pero debido a la
 variabilidad natural entre individuos, se espera que el costo real de
 una persona con este perfil pueda encontrarse, con un 95% de confianza,
-entre **-4226.81** y **19612.34**. Este intervalo es considerablemente
+entre **2850.599** y **16547.28**. Este intervalo es considerablemente
 más amplio que el intervalo de confianza para la media, ya que incorpora
 no solo la incertidumbre en la estimación del promedio, sino también la
 dispersión propia de los valores individuales. El límite inferior

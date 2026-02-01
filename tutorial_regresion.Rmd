@@ -235,8 +235,16 @@ estadísticas.
 
 ```{r}
 summary(insurance)
-
+library(ggplot2)
+ggplot(insurance, aes(x = charges)) +
+  geom_histogram(bins = 30, alpha = 0.7) +
+  labs(title = "Distribución del costo del seguro médico",
+       x = "Charges",
+       y = "Frecuencia") +
+  theme_minimal()
 ```
+
+Se observa que la variable `charges` presenta una distribución claramente asimétrica positiva, lo que indica que la mayoría de los asegurados registra costos médicos moderados concentrados en valores bajos e intermedios. Sin embargo, existen algunos casos aislados con gastos extremadamente altos que generan una cola larga hacia la derecha. Este patrón es común en datos de seguros médicos, donde un pequeño grupo de individuos puede incurrir en costos elevados debido a tratamientos complejos o condiciones particulares de salud. Esta asimetría sugiere que, en etapas posteriores del análisis, podría ser necesario considerar transformaciones o ajustes adicionales para mejorar el cumplimiento de supuestos como la normalidad de los errores.
 
 ## 3.3 Resumen descriptivo bivariado
 
@@ -253,6 +261,26 @@ boxplot(charges ~ smoker,
         ylab = "Charges")
 
 ```
+
+```{r}
+ggplot(insurance, aes(x = age, y = charges)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(title = "Relación entre edad y costo del seguro",
+       x = "Edad",
+       y = "Charges") +
+  theme_minimal()
+```
+
+El análisis bivariado mediante el boxplot de `charges` según la condición de fumador permite observar diferencias claras en los costos médicos entre ambos grupos. Se aprecia que los individuos fumadores presentan, en promedio, gastos significativamente más altos que los no fumadores, además de una mayor dispersión en sus valores. Esto sugiere que el hábito de fumar está asociado con un incremento importante en el costo del seguro médico, probablemente debido al mayor riesgo de enfermedades y tratamientos más frecuentes o costosos. Por lo tanto, la variable `smoker` se perfila como un factor explicativo relevante dentro del modelo de regresión lineal múltiple, ya que contribuye a explicar parte de la variabilidad observada en los gastos médicos individuales.
+
+```{r}
+# Correlación de Pearson
+cor.test(insurance$age, insurance$charges, method = "pearson")
+```
+
+La correlación de Pearson permite cuantificar la intensidad y dirección de la relación lineal entre dos variables cuantitativas, en este caso entre la edad (`age`) y los costos médicos (`charges`). El coeficiente obtenido fue \(r = 0.299\), lo que indica una relación lineal positiva pero moderada: a medida que aumenta la edad del asegurado, los gastos del seguro tienden a incrementarse, aunque no de manera extremadamente fuerte. Además, el valor p asociado fue menor que \(2.2 \times 10^{-16}\), por lo que se rechaza la hipótesis nula de correlación igual a cero, concluyendo que la relación observada es estadísticamente significativa. El intervalo de confianza al 95% \([0.249,\ 0.347]\) confirma que la correlación poblacional es positiva. Este análisis bivariado proporciona evidencia inicial de que la edad podría ser un predictor relevante dentro del modelo de regresión lineal múltiple.
+
 
 # **4.MODELAMIENTO ESTADÍSTICO**
 

@@ -450,8 +450,18 @@ estadísticas. Una transformación común es el uso del logaritmo natural
 de la variable `charges`.
 
 ```{r}
-# CODIGOOOOOOOO
+modelo_log <- lm(log(charges) ~ age + bmi + children + sex + smoker + region,
+                 data = insurance)
+
+summary(modelo_log)
 ```
+Debido a que en el modelo inicial se evidenciaron desviaciones en los supuestos, se aplicó una transformación logarítmica a la variable respuesta, ajustando el modelo:
+
+\[
+\log(charges) \sim age + bmi + children + sex + smoker + region
+\]
+
+Los resultados muestran que la mayoría de variables explicativas continúan siendo estadísticamente significativas. En particular, la edad (\(p < 2e-16\)), el índice de masa corporal (\(p = 2.42 \times 10^{-10}\)), el número de hijos (\(p < 2e-16\)) y el hábito de fumar (\(p < 2e-16\)) presentan un efecto importante sobre los costos médicos. El coeficiente asociado a `smokeryes` es el más alto (\(1.5543\)), indicando que ser fumador incrementa considerablemente el costo esperado del seguro, incluso en escala logarítmica. Además, el modelo transformado alcanza un \(R^2 = 0.7679\), lo que significa que aproximadamente el 76.8% de la variabilidad en \(\log(charges)\) es explicada por las variables incluidas. En conjunto, esta transformación mejora la estabilidad de los errores y contribuye a un ajuste más adecuado del modelo.
 
 ## 4.9 Prueba de hipótesis global
 

@@ -436,8 +436,10 @@ observaciones individuales y no a una serie temporal, se asume que este
 supuesto se cumple.
 
 ```{r}
-# CODIGOOOOOOOO
+library(lmtest)
+dwtest(modelo)
 ```
+Para evaluar el supuesto de independencia de los errores del modelo, se aplicó la prueba de Durbin-Watson. El resultado obtenido fue \(DW = 2.0884\), valor que se encuentra muy cercano a 2, lo cual sugiere ausencia de autocorrelación en los residuales. Además, el p-value fue \(0.9472\), que es considerablemente mayor que el nivel de significancia usual (\(\alpha = 0.05\)). Por lo tanto, no se rechaza la hipótesis nula de independencia, concluyéndose que los errores del modelo no presentan autocorrelación positiva significativa y que el supuesto de independencia se cumple adecuadamente.
 
 ## 4.8 Transformación de datos (si aplica)
 

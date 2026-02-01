@@ -402,7 +402,7 @@ qqnorm(residuales); qqline(residuales)
 shapiro.test(residuals(modelo))
 ```
 
-*Prueba de normalidad (Shapiro–Wilk)**
+*Prueba de normalidad (Shapiro–Wilk)*
 
 Para evaluar el supuesto de normalidad de los residuos del modelo, se aplicó la prueba de Shapiro–Wilk, la cual contrasta las siguientes hipótesis:
 
@@ -411,8 +411,6 @@ Para evaluar el supuesto de normalidad de los residuos del modelo, se aplicó la
 
 El resultado obtenido fue \(W = 0.89894\) con un valor-p extremadamente pequeño (\(p < 2.2 \times 10^{-16}\)).  
 Dado que el valor-p es menor que el nivel de significancia usual (\(\alpha = 0.05\)), se **rechaza la hipótesis nula**, concluyendo que existe evidencia estadística de que los residuos no cumplen completamente el supuesto de normalidad. Esto es consistente con la asimetría observada en la variable `charges`, por lo que podría considerarse una transformación logarítmica para mejorar el ajuste.
-
-
 
 ## 4.6 Verificación del supuesto de homocedasticidad
 
@@ -426,6 +424,12 @@ library(lmtest)
 bptest(modelo)
 
 ```
+Para evaluar el supuesto de **homocedasticidad** (varianza constante de los errores), se aplicó la prueba estadística de **Breusch–Pagan**. En este caso, se plantean las siguientes hipótesis:
+
+- **Hipótesis nula \(H_0\):** la varianza de los errores es constante (existe homocedasticidad).  
+- **Hipótesis alternativa \(H_1\):** la varianza de los errores no es constante (existe heterocedasticidad).
+
+El resultado obtenido fue \(BP = 121.74\) con un valor p extremadamente pequeño (\(p < 2.2 \times 10^{-16}\)). Dado que este valor p es menor que el nivel de significancia usual (\(\alpha = 0.05\)), se **rechaza la hipótesis nula**. Por lo tanto, existe evidencia estadística de que los residuos del modelo presentan **heterocedasticidad**, es decir, la variabilidad de los errores no se mantiene constante a lo largo de los valores ajustados. Esto es común en datos como el dataset *Insurance*, donde los costos médicos pueden mostrar gran dispersión en ciertos grupos, por lo que podría considerarse una transformación (como el logaritmo) o el uso de métodos robustos para mejorar el ajuste del modelo.
 
 ## 4.7 Verificación del supuesto de independencia de errores
 
@@ -438,7 +442,16 @@ supuesto se cumple.
 library(lmtest)
 dwtest(modelo)
 ```
-Para evaluar el supuesto de independencia de los errores del modelo, se aplicó la prueba de Durbin-Watson. El resultado obtenido fue \(DW = 2.0884\), valor que se encuentra muy cercano a 2, lo cual sugiere ausencia de autocorrelación en los residuales. Además, el p-value fue \(0.9472\), que es considerablemente mayor que el nivel de significancia usual (\(\alpha = 0.05\)). Por lo tanto, no se rechaza la hipótesis nula de independencia, concluyéndose que los errores del modelo no presentan autocorrelación positiva significativa y que el supuesto de independencia se cumple adecuadamente.
+Para evaluar el supuesto de **independencia de los errores** (ausencia de autocorrelación), se aplicó la prueba estadística de **Durbin–Watson**, la cual es utilizada para detectar correlación serial en los residuos del modelo.
+
+Las hipótesis planteadas son:
+
+- **Hipótesis nula \(H_0\):** no existe autocorrelación en los errores (los residuos son independientes).  
+- **Hipótesis alternativa \(H_1\):** existe autocorrelación positiva en los errores.
+
+El resultado obtenido fue \(DW = 2.0884\), un valor muy cercano a 2, lo cual sugiere ausencia de autocorrelación en los residuos. Además, el valor p asociado fue \(p = 0.9472\), que es considerablemente mayor que el nivel de significancia usual (\(\alpha = 0.05\)).
+
+Por lo tanto, **no se rechaza la hipótesis nula**, concluyendo que no existe evidencia estadística de autocorrelación positiva en los errores. En consecuencia, el supuesto de **independencia de los residuales** se cumple adecuadamente en este modelo de regresión lineal múltiple.
 
 ## 4.8 Transformación de datos (si aplica)
 

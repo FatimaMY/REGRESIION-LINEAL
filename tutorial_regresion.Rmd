@@ -524,6 +524,7 @@ nuevo <- data.frame(
 predict(modelo, nuevo, interval = "confidence")
 
 ```
+El intervalo de confianza obtenido permite estimar el **costo médico promedio esperado** para un individuo con las características especificadas (edad 40 años, BMI 28, 2 hijos, hombre, no fumador y residente en la región suroeste). El modelo predice un gasto medio aproximado de **7692.77 unidades monetarias**. Además, con un nivel de confianza del 95%, se concluye que el verdadero costo promedio para personas con este perfil se encuentra entre **6887.33** y **8498.21**. Este intervalo refleja únicamente la incertidumbre asociada a la estimación de la media poblacional, por lo que es más estrecho que un intervalo de predicción individual.
 
 ## 4.12 Predicción de un nuevo valor (puntual e intervalar)
 
@@ -536,6 +537,7 @@ intervalo de confianza de la media.
 ```{r}
 predict(modelo, nuevo, interval = "prediction")
 ```
+El intervalo de predicción obtenido permite estimar el rango en el que podría ubicarse el **costo médico de un caso individual específico** con las características dadas (edad 40 años, BMI 28, 2 hijos, hombre, no fumador y residente en la región suroeste). El modelo predice un gasto aproximado de **7692.77 unidades monetarias**, pero debido a la variabilidad natural entre individuos, se espera que el costo real de una persona con este perfil pueda encontrarse, con un 95% de confianza, entre **-4226.81** y **19612.34**. Este intervalo es considerablemente más amplio que el intervalo de confianza para la media, ya que incorpora no solo la incertidumbre en la estimación del promedio, sino también la dispersión propia de los valores individuales. El límite inferior negativo no representa un costo real posible, sino una consecuencia matemática de la amplitud del intervalo y la variabilidad presente en los datos.
 
 # **5. REPLICABILIDAD DEL TUTORIAL**
 

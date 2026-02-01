@@ -143,24 +143,16 @@ verificar supuestos estadísticos y comunicar resultados de manera clara.
 
 ### Objetivos específicos
 
--   Ejecutar un análisis exploratorio inicial de los datos requeridos,
-    las variables (sean cuantitativas o cualitativas) necesarias, sus
-    estructuras mediante la visualización, interpretación del mismo
-    (análisis univariado) y la correlación existente entre dos variables
-    (análisis bivariado).
--   Formular un modelo de RLM según la notación requerida, interpretando
-    sus distintas componentes.
--   Desarrollar las etapas necesarias para la evaluación correcta del
-    modelo.
--   Evaluar el ajuste del modelo mediante el Coeficiente de
-    Determinación (R2).
--   Verificar el cumplimiento de los supuestos (normalidad,
-    homocedasticidad e independencia de errores).
--   Aplicar las medidas necesarias en caso no se verifique el
-    cumplimiento de alguno de los supuestos.
--   Predecir valores futuros para nuevas observaciones, comprendiendo
-    los intervalos de confianza de estas predicciones (para la media) y
-    los intervalos de predicción (para casos puntuales).
+- Ejecutar un análisis exploratorio inicial de los datos requeridos, identificando las variables cuantitativas y cualitativas, su estructura mediante visualizaciones e interpretaciones descriptivas (análisis univariado), así como la correlación existente entre dos variables (análisis bivariado).
+
+- Formular un modelo de Regresión Lineal Múltiple (RLM) según la notación requerida, interpretando adecuadamente sus componentes principales.
+
+- Desarrollar la evaluación del modelo mediante el análisis del ajuste (**\(R^2\)**) y la verificación de supuestos estadísticos fundamentales (normalidad, homocedasticidad e independencia).
+
+- Aplicar las medidas necesarias en caso de que no se verifique el cumplimiento de alguno de los supuestos del modelo.
+
+- Predecir valores futuros para nuevas observaciones, comprendiendo tanto los intervalos de confianza para la media como los intervalos de predicción para casos individuales.
+
 
 ------------------------------------------------------------------------
 
@@ -357,9 +349,7 @@ En cuanto a la variable `region`, los coeficientes representan diferencias respe
 - Vivir en el sureste (`regionsoutheast`) reduce los costos en 1035.0 unidades.  
 - Vivir en el suroeste (`regionsouthwest`) reduce los costos en 960.0 unidades.  
 
-
-
-En conjunto, estos resultados permiten identificar qué factores influyen con mayor intensidad sobre el costo del seguro médico, destacando principalmente el hábito de fumar como el predictor más importante.
+El predictor más influyente es smoker, lo que confirma lo observado en el análisis bivariado.En conjunto, estos resultados permiten identificar qué factores influyen con mayor intensidad sobre el costo del seguro médico, destacando principalmente el hábito de fumar como el predictor más importante. 
 
 
 ## 4.4 Coeficiente de determinación

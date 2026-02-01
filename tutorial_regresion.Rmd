@@ -488,9 +488,21 @@ asociado a una variable explicativa es igual a cero, manteniendo
 constantes las demás variables.
 
 ```{r}
-# CODIGOOOOOOOO
-summary(modelo)
+summary(modelo)$coefficients
 ```
+Las pruebas de hipótesis individuales permiten evaluar si cada variable explicativa tiene un efecto significativo sobre el costo del seguro médico (`charges`), manteniendo constantes las demás variables del modelo. Para cada coeficiente se contrasta la hipótesis nula \(H_0: \beta_j = 0\), es decir, que la variable no tiene influencia estadísticamente significativa.
+
+Los resultados muestran que la variable `age` es altamente significativa (\(p < 2.2 \times 10^{-16}\)), indicando que, en promedio, por cada año adicional de edad el costo del seguro aumenta en aproximadamente **256.86 unidades monetarias**, manteniendo constantes las demás variables. Asimismo, el índice de masa corporal `bmi` también es significativo (\(p < 2.2 \times 10^{-16}\)), lo que sugiere que un incremento de una unidad en el BMI incrementa el gasto esperado en alrededor de **339.19 unidades**.
+
+La variable `children` presenta un efecto positivo y significativo (\(p = 0.000577\)), indicando que tener más hijos dependientes se asocia con un aumento promedio de **475.50 unidades** en el costo del seguro.
+
+Por otro lado, la variable `sexmale` no resulta significativa (\(p = 0.693\)), lo que implica que no existe evidencia suficiente para afirmar que el costo del seguro difiera entre hombres y mujeres cuando se controlan las demás variables.
+
+La variable con mayor impacto es `smokeryes`, que es extremadamente significativa (\(p < 2.2 \times 10^{-16}\)). El coeficiente estimado indica que ser fumador incrementa el costo del seguro en aproximadamente **23848.53 unidades**, convirtiéndose en el predictor más importante del modelo.
+
+Finalmente, respecto a la región geográfica, `regionnorthwest` no es significativa (\(p = 0.459\)), mientras que `regionsoutheast` (\(p = 0.0308\)) y `regionsouthwest` (\(p = 0.0448\)) presentan efectos negativos moderados, sugiriendo diferencias regionales leves en los costos médicos con respecto a la región de referencia.
+
+En conclusión, las variables más relevantes para explicar el costo del seguro médico son la edad, el BMI y especialmente el hábito de fumar, mientras que el sexo y algunas regiones no muestran un efecto estadísticamente significativo dentro del modelo.
 
 ## 4.11 Estimación de una media (puntual e intervalar)
 

@@ -471,9 +471,13 @@ contrasta la hipótesis nula de que todos los coeficientes de regresión,
 excepto el intercepto, son iguales a cero.
 
 ```{r}
-# CODIGOOOOOOOO
 summary(modelo)
+anova(modelo)
 ```
+Para evaluar la significancia global del modelo de regresión lineal múltiple, se realizó un análisis de varianza (ANOVA). Los resultados indican que el modelo es estadísticamente significativo en conjunto, ya que el estadístico F obtenido es \(F = 500.8\) con un valor-p menor a \(2.2 \times 10^{-16}\). Esto confirma que al menos una de las variables explicativas incluidas contribuye de manera importante a explicar la variabilidad en los costos médicos (`charges`). 
+
+Además, la tabla ANOVA muestra que variables como la edad (`age`), el índice de masa corporal (`bmi`) y especialmente el hábito de fumar (`smoker`) presentan efectos altamente significativos (\(p < 2.2 \times 10^{-16}\)), siendo `smoker` el factor con mayor influencia sobre los costos del seguro. También `children` resulta significativa (\(p = 8.446 \times 10^{-5}\)). Por otro lado, la variable `region` presenta un valor-p de \(0.096\), lo que sugiere que su efecto global es más débil en comparación con las demás. En conjunto, este análisis confirma que el modelo ajustado tiene capacidad explicativa relevante para predecir los costos médicos.
+
 
 ## 4.10 Pruebas de hipótesis individuales
 

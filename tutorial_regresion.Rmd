@@ -56,7 +56,7 @@ editor_options:
             \hline
             Maguiña Tabory, Leonardo & 20241388 \\
             \hline
-            Cruzado Flores, Abel & 20240000\\
+            Cruzado Flores, Abel & 20241377\\
             \hline
             Montes Yato, Fátima & 20220510 \\
             \hline
@@ -143,16 +143,26 @@ verificar supuestos estadísticos y comunicar resultados de manera clara.
 
 ### Objetivos específicos
 
-- Ejecutar un análisis exploratorio inicial de los datos requeridos, identificando las variables cuantitativas y cualitativas, su estructura mediante visualizaciones e interpretaciones descriptivas (análisis univariado), así como la correlación existente entre dos variables (análisis bivariado).
+-   Ejecutar un análisis exploratorio inicial de los datos requeridos,
+    identificando las variables cuantitativas y cualitativas, su
+    estructura mediante visualizaciones e interpretaciones descriptivas
+    (análisis univariado), así como la correlación existente entre dos
+    variables (análisis bivariado).
 
-- Formular un modelo de Regresión Lineal Múltiple (RLM) según la notación requerida, interpretando adecuadamente sus componentes principales.
+-   Formular un modelo de Regresión Lineal Múltiple (RLM) según la
+    notación requerida, interpretando adecuadamente sus componentes
+    principales.
 
-- Desarrollar la evaluación del modelo mediante el análisis del ajuste (**\(R^2\)**) y la verificación de supuestos estadísticos fundamentales (normalidad, homocedasticidad e independencia).
+-   Desarrollar la evaluación del modelo mediante el análisis del ajuste
+    ($R^2$) y la verificación de supuestos estadísticos fundamentales
+    (normalidad, homocedasticidad e independencia).
 
-- Aplicar las medidas necesarias en caso de que no se verifique el cumplimiento de alguno de los supuestos del modelo.
+-   Aplicar las medidas necesarias en caso de que no se verifique el
+    cumplimiento de alguno de los supuestos del modelo.
 
-- Predecir valores futuros para nuevas observaciones, comprendiendo tanto los intervalos de confianza para la media como los intervalos de predicción para casos individuales.
-
+-   Predecir valores futuros para nuevas observaciones, comprendiendo
+    tanto los intervalos de confianza para la media como los intervalos
+    de predicción para casos individuales.
 
 ------------------------------------------------------------------------
 
@@ -236,7 +246,17 @@ ggplot(insurance, aes(x = charges)) +
   theme_minimal()
 ```
 
-Se observa que la variable `charges` presenta una distribución claramente asimétrica positiva, lo que indica que la mayoría de los asegurados registra costos médicos moderados concentrados en valores bajos e intermedios. Sin embargo, existen algunos casos aislados con gastos extremadamente altos que generan una cola larga hacia la derecha. Este patrón es común en datos de seguros médicos, donde un pequeño grupo de individuos puede incurrir en costos elevados debido a tratamientos complejos o condiciones particulares de salud. Esta asimetría sugiere que, en etapas posteriores del análisis, podría ser necesario considerar transformaciones o ajustes adicionales para mejorar el cumplimiento de supuestos como la normalidad de los errores.
+Se observa que la variable `charges` presenta una distribución
+claramente asimétrica positiva, lo que indica que la mayoría de los
+asegurados registra costos médicos moderados concentrados en valores
+bajos e intermedios. Sin embargo, existen algunos casos aislados con
+gastos extremadamente altos que generan una cola larga hacia la derecha.
+Este patrón es común en datos de seguros médicos, donde un pequeño grupo
+de individuos puede incurrir en costos elevados debido a tratamientos
+complejos o condiciones particulares de salud. Esta asimetría sugiere
+que, en etapas posteriores del análisis, podría ser necesario considerar
+transformaciones o ajustes adicionales para mejorar el cumplimiento de
+supuestos como la normalidad de los errores.
 
 ## 3.3 Resumen descriptivo bivariado
 
@@ -264,15 +284,36 @@ ggplot(insurance, aes(x = age, y = charges)) +
   theme_minimal()
 ```
 
-El análisis bivariado mediante el boxplot de `charges` según la condición de fumador permite observar diferencias claras en los costos médicos entre ambos grupos. Se aprecia que los individuos fumadores presentan, en promedio, gastos significativamente más altos que los no fumadores, además de una mayor dispersión en sus valores. Esto sugiere que el hábito de fumar está asociado con un incremento importante en el costo del seguro médico, probablemente debido al mayor riesgo de enfermedades y tratamientos más frecuentes o costosos. Por lo tanto, la variable `smoker` se perfila como un factor explicativo relevante dentro del modelo de regresión lineal múltiple, ya que contribuye a explicar parte de la variabilidad observada en los gastos médicos individuales.
+El análisis bivariado mediante el boxplot de `charges` según la
+condición de fumador permite observar diferencias claras en los costos
+médicos entre ambos grupos. Se aprecia que los individuos fumadores
+presentan, en promedio, gastos significativamente más altos que los no
+fumadores, además de una mayor dispersión en sus valores. Esto sugiere
+que el hábito de fumar está asociado con un incremento importante en el
+costo del seguro médico, probablemente debido al mayor riesgo de
+enfermedades y tratamientos más frecuentes o costosos. Por lo tanto, la
+variable `smoker` se perfila como un factor explicativo relevante dentro
+del modelo de regresión lineal múltiple, ya que contribuye a explicar
+parte de la variabilidad observada en los gastos médicos individuales.
 
 ```{r}
 # Correlación de Pearson
 cor.test(insurance$age, insurance$charges, method = "pearson")
 ```
 
-La correlación de Pearson permite cuantificar la intensidad y dirección de la relación lineal entre dos variables cuantitativas, en este caso entre la edad (`age`) y los costos médicos (`charges`). El coeficiente obtenido fue \(r = 0.299\), lo que indica una relación lineal positiva pero moderada: a medida que aumenta la edad del asegurado, los gastos del seguro tienden a incrementarse, aunque no de manera extremadamente fuerte. Además, el valor p asociado fue menor que \(2.2 \times 10^{-16}\), por lo que se rechaza la hipótesis nula de correlación igual a cero, concluyendo que la relación observada es estadísticamente significativa. El intervalo de confianza al 95% \([0.249,\ 0.347]\) confirma que la correlación poblacional es positiva. Este análisis bivariado proporciona evidencia inicial de que la edad podría ser un predictor relevante dentro del modelo de regresión lineal múltiple.
-
+La correlación de Pearson permite cuantificar la intensidad y dirección
+de la relación lineal entre dos variables cuantitativas, en este caso
+entre la edad (`age`) y los costos médicos (`charges`). El coeficiente
+obtenido fue $r = 0.299$, lo que indica una relación lineal positiva
+pero moderada: a medida que aumenta la edad del asegurado, los gastos
+del seguro tienden a incrementarse, aunque no de manera extremadamente
+fuerte. Además, el valor p asociado fue menor que $2.2 \times 10^{-16}$,
+por lo que se rechaza la hipótesis nula de correlación igual a cero,
+concluyendo que la relación observada es estadísticamente significativa.
+El intervalo de confianza al 95% $[0.249,\ 0.347]$ confirma que la
+correlación poblacional es positiva. Este análisis bivariado proporciona
+evidencia inicial de que la edad podría ser un predictor relevante
+dentro del modelo de regresión lineal múltiple.
 
 # **4.MODELAMIENTO ESTADÍSTICO**
 
@@ -313,44 +354,71 @@ summary(modelo)
 
 ## 4.3 Interpretación de los coeficientes de regresión
 
-Cada coeficiente estimado en el modelo de regresión lineal múltiple representa el cambio promedio esperado en el costo del seguro médico (`charges`) ante un incremento de una unidad en la variable explicativa correspondiente, manteniendo constantes las demás variables del modelo.
+Cada coeficiente estimado en el modelo de regresión lineal múltiple
+representa el cambio promedio esperado en el costo del seguro médico
+(`charges`) ante un incremento de una unidad en la variable explicativa
+correspondiente, manteniendo constantes las demás variables del modelo.
 
----
+------------------------------------------------------------------------
 
 **Intercepto**
 
-El intercepto estimado es \(-11938.5\), el cual representa el valor esperado de `charges` cuando todas las variables cuantitativas valen cero y el individuo pertenece a las categorías de referencia (sexo femenino, no fumador y región noreste). Sin embargo, este valor no necesariamente tiene una interpretación práctica directa.
+El intercepto estimado es $-11938.5$, el cual representa el valor
+esperado de `charges` cuando todas las variables cuantitativas valen
+cero y el individuo pertenece a las categorías de referencia (sexo
+femenino, no fumador y región noreste). Sin embargo, este valor no
+necesariamente tiene una interpretación práctica directa.
 
 **Edad (`age`)**
 
-El coeficiente asociado a `age` es \(256.9\), lo que indica que por cada año adicional de edad, el costo médico promedio aumenta aproximadamente en 256.9 unidades monetarias, manteniendo constantes las demás variables.
+El coeficiente asociado a `age` es $256.9$, lo que indica que por cada
+año adicional de edad, el costo médico promedio aumenta aproximadamente
+en 256.9 unidades monetarias, manteniendo constantes las demás
+variables.
 
 **Índice de masa corporal (`bmi`)**
 
-El coeficiente estimado para `bmi` es \(339.2\). Esto sugiere que un aumento de una unidad en el BMI incrementa en promedio los costos médicos en 339.2 unidades, bajo las mismas condiciones.
+El coeficiente estimado para `bmi` es $339.2$. Esto sugiere que un
+aumento de una unidad en el BMI incrementa en promedio los costos
+médicos en 339.2 unidades, bajo las mismas condiciones.
 
 **Número de hijos (`children`)**
 
-La variable `children` presenta un coeficiente de \(475.5\), indicando que cada hijo adicional está asociado con un aumento promedio de 475.5 unidades en los gastos médicos.
+La variable `children` presenta un coeficiente de $475.5$, indicando que
+cada hijo adicional está asociado con un aumento promedio de 475.5
+unidades en los gastos médicos.
 
 **Sexo (`sexmale`)**
 
-Para la variable categórica `sexmale`, el coeficiente es \(-131.3\), lo que implica que, en promedio, los hombres presentan costos ligeramente menores que las mujeres. No obstante, este efecto no resulta estadísticamente significativo.
+Para la variable categórica `sexmale`, el coeficiente es $-131.3$, lo
+que implica que, en promedio, los hombres presentan costos ligeramente
+menores que las mujeres. No obstante, este efecto no resulta
+estadísticamente significativo.
 
 **Hábito de fumar (`smokeryes`)**
 
-El coeficiente para `smokeryes` es \(23848.5\), mostrando que los fumadores tienen costos médicos considerablemente más altos: en promedio, 23848.5 unidades adicionales en comparación con los no fumadores. Este es el efecto más fuerte dentro del modelo.
+El coeficiente para `smokeryes` es $23848.5$, mostrando que los
+fumadores tienen costos médicos considerablemente más altos: en
+promedio, 23848.5 unidades adicionales en comparación con los no
+fumadores. Este es el efecto más fuerte dentro del modelo.
 
 **Región (`region`)**
 
-En cuanto a la variable `region`, los coeficientes representan diferencias respecto a la región de referencia (noreste):
+En cuanto a la variable `region`, los coeficientes representan
+diferencias respecto a la región de referencia (noreste):
 
-- Vivir en el noroeste (`regionnorthwest`) reduce en promedio los costos en 353.0 unidades.  
-- Vivir en el sureste (`regionsoutheast`) reduce los costos en 1035.0 unidades.  
-- Vivir en el suroeste (`regionsouthwest`) reduce los costos en 960.0 unidades.  
+-   Vivir en el noroeste (`regionnorthwest`) reduce en promedio los
+    costos en 353.0 unidades.\
+-   Vivir en el sureste (`regionsoutheast`) reduce los costos en 1035.0
+    unidades.\
+-   Vivir en el suroeste (`regionsouthwest`) reduce los costos en 960.0
+    unidades.
 
-El predictor más influyente es smoker, lo que confirma lo observado en el análisis bivariado.En conjunto, estos resultados permiten identificar qué factores influyen con mayor intensidad sobre el costo del seguro médico, destacando principalmente el hábito de fumar como el predictor más importante. 
-
+El predictor más influyente es smoker, lo que confirma lo observado en
+el análisis bivariado.En conjunto, estos resultados permiten identificar
+qué factores influyen con mayor intensidad sobre el costo del seguro
+médico, destacando principalmente el hábito de fumar como el predictor
+más importante.
 
 ## 4.4 Coeficiente de determinación
 
@@ -368,9 +436,10 @@ summary(modelo)$r.squared
 Primero verificamos mediante un histograma que la distribución de los
 residuales se parezca a una distribución Normal.
 
-Esto con la finalidad de tener una conclusión más fuerte, sobre el cumplimiento supuesto de normalidad de errores, cual es que los errores se distribuyen normalmente. supuesto necesario para la validez de
-las inferencias estadísticas.
-$$ \epsilon_i \sim N(0, \sigma^2)$$
+Esto con la finalidad de tener una conclusión más fuerte, sobre el
+cumplimiento supuesto de normalidad de errores, cual es que los errores
+se distribuyen normalmente. supuesto necesario para la validez de las
+inferencias estadísticas. $$ \epsilon_i \sim N(0, \sigma^2)$$
 
 ```{r}
 library(ggplot2)
@@ -388,10 +457,14 @@ ggplot(data.frame(residuales), aes(x = residuales)) +
        y = "Densidad") +
   theme_minimal()
 ```
-Se aprecia que los errores no se acercan a una distribución normal, en cambio, presenta una marcada asímetria positiva, además la distribución muestra una posible forma leptocúrtica, por la forma apuntalada
-en el centro, y la cola pesada hacía la derecha.
 
-Usamos ahora un gráfico de probabilidad normal, con la finalidad de detecar outliers, asímetria y curtosis.
+Se aprecia que los errores no se acercan a una distribución normal, en
+cambio, presenta una marcada asímetria positiva, además la distribución
+muestra una posible forma leptocúrtica, por la forma apuntalada en el
+centro, y la cola pesada hacía la derecha.
+
+Usamos ahora un gráfico de probabilidad normal, con la finalidad de
+detecar outliers, asímetria y curtosis.
 
 ```{r}
 qqnorm(residuales); qqline(residuales)
@@ -404,13 +477,23 @@ shapiro.test(residuals(modelo))
 
 *Prueba de normalidad (Shapiro–Wilk)*
 
-Para evaluar el supuesto de normalidad de los residuos del modelo, se aplicó la prueba de Shapiro–Wilk, la cual contrasta las siguientes hipótesis:
+Para evaluar el supuesto de normalidad de los residuos del modelo, se
+aplicó la prueba de Shapiro–Wilk, la cual contrasta las siguientes
+hipótesis:
 
-- **Hipótesis nula \(H_0\):** los residuos siguen una distribución Normal.  
-- **Hipótesis alternativa \(H_1\):** los residuos no siguen una distribución Normal.
+-   **Hipótesis nula** $H_0$: los residuos siguen una distribución
+    Normal.\
+-   **Hipótesis alternativa** $H_1$: los residuos no siguen una
+    distribución Normal.
 
-El resultado obtenido fue \(W = 0.89894\) con un valor-p extremadamente pequeño (\(p < 2.2 \times 10^{-16}\)).  
-Dado que el valor-p es menor que el nivel de significancia usual (\(\alpha = 0.05\)), se **rechaza la hipótesis nula**, concluyendo que existe evidencia estadística de que los residuos no cumplen completamente el supuesto de normalidad. Esto es consistente con la asimetría observada en la variable `charges`, por lo que podría considerarse una transformación logarítmica para mejorar el ajuste.
+El resultado obtenido fue $W = 0.89894$ con un valor-p extremadamente
+pequeño ($p < 2.2 \times 10^{-16}$).\
+Dado que el valor-p es menor que el nivel de significancia usual
+($\alpha = 0.05$), se **rechaza la hipótesis nula**, concluyendo que
+existe evidencia estadística de que los residuos no cumplen
+completamente el supuesto de normalidad. Esto es consistente con la
+asimetría observada en la variable `charges`, por lo que podría
+considerarse una transformación logarítmica para mejorar el ajuste.
 
 ## 4.6 Verificación del supuesto de homocedasticidad
 
@@ -424,12 +507,27 @@ library(lmtest)
 bptest(modelo)
 
 ```
-Para evaluar el supuesto de **homocedasticidad** (varianza constante de los errores), se aplicó la prueba estadística de **Breusch–Pagan**. En este caso, se plantean las siguientes hipótesis:
 
-- **Hipótesis nula \(H_0\):** la varianza de los errores es constante (existe homocedasticidad).  
-- **Hipótesis alternativa \(H_1\):** la varianza de los errores no es constante (existe heterocedasticidad).
+Para evaluar el supuesto de **homocedasticidad** (varianza constante de
+los errores), se aplicó la prueba estadística de **Breusch–Pagan**. En
+este caso, se plantean las siguientes hipótesis:
 
-El resultado obtenido fue \(BP = 121.74\) con un valor p extremadamente pequeño (\(p < 2.2 \times 10^{-16}\)). Dado que este valor p es menor que el nivel de significancia usual (\(\alpha = 0.05\)), se **rechaza la hipótesis nula**. Por lo tanto, existe evidencia estadística de que los residuos del modelo presentan **heterocedasticidad**, es decir, la variabilidad de los errores no se mantiene constante a lo largo de los valores ajustados. Esto es común en datos como el dataset *Insurance*, donde los costos médicos pueden mostrar gran dispersión en ciertos grupos, por lo que podría considerarse una transformación (como el logaritmo) o el uso de métodos robustos para mejorar el ajuste del modelo.
+-   **Hipótesis nula** $H_0$: la varianza de los errores es constante
+    (existe homocedasticidad).\
+-   **Hipótesis alternativa** $H_1$: la varianza de los errores no es
+    constante (existe heterocedasticidad).
+
+El resultado obtenido fue $BP = 121.74$ con un valor p extremadamente
+pequeño ($p < 2.2 \times 10^{-16}$). Dado que este valor p es menor que
+el nivel de significancia usual ($\alpha = 0.05$), se **rechaza la
+hipótesis nula**. Por lo tanto, existe evidencia estadística de que los
+residuos del modelo presentan **heterocedasticidad**, es decir, la
+variabilidad de los errores no se mantiene constante a lo largo de los
+valores ajustados. Esto es común en datos como el dataset *Insurance*,
+donde los costos médicos pueden mostrar gran dispersión en ciertos
+grupos, por lo que podría considerarse una transformación (como el
+logaritmo) o el uso de métodos robustos para mejorar el ajuste del
+modelo.
 
 ## 4.7 Verificación del supuesto de independencia de errores
 
@@ -442,16 +540,28 @@ supuesto se cumple.
 library(lmtest)
 dwtest(modelo)
 ```
-Para evaluar el supuesto de **independencia de los errores** (ausencia de autocorrelación), se aplicó la prueba estadística de **Durbin–Watson**, la cual es utilizada para detectar correlación serial en los residuos del modelo.
+
+Para evaluar el supuesto de **independencia de los errores** (ausencia
+de autocorrelación), se aplicó la prueba estadística de
+**Durbin–Watson**, la cual es utilizada para detectar correlación serial
+en los residuos del modelo.
 
 Las hipótesis planteadas son:
 
-- **Hipótesis nula \(H_0\):** no existe autocorrelación en los errores (los residuos son independientes).  
-- **Hipótesis alternativa \(H_1\):** existe autocorrelación positiva en los errores.
+-   **Hipótesis nula** $H_0$: no existe autocorrelación en los errores
+    (los residuos son independientes).\
+-   **Hipótesis alternativa** $H_1$: existe autocorrelación positiva en
+    los errores.
 
-El resultado obtenido fue \(DW = 2.0884\), un valor muy cercano a 2, lo cual sugiere ausencia de autocorrelación en los residuos. Además, el valor p asociado fue \(p = 0.9472\), que es considerablemente mayor que el nivel de significancia usual (\(\alpha = 0.05\)).
+El resultado obtenido fue $DW = 2.0884$, un valor muy cercano a 2, lo
+cual sugiere ausencia de autocorrelación en los residuos. Además, el
+valor p asociado fue $p = 0.9472$, que es considerablemente mayor que el
+nivel de significancia usual ($\alpha = 0.05$).
 
-Por lo tanto, **no se rechaza la hipótesis nula**, concluyendo que no existe evidencia estadística de autocorrelación positiva en los errores. En consecuencia, el supuesto de **independencia de los residuales** se cumple adecuadamente en este modelo de regresión lineal múltiple.
+Por lo tanto, **no se rechaza la hipótesis nula**, concluyendo que no
+existe evidencia estadística de autocorrelación positiva en los errores.
+En consecuencia, el supuesto de **independencia de los residuales** se
+cumple adecuadamente en este modelo de regresión lineal múltiple.
 
 ## 4.8 Transformación de datos (si aplica)
 
@@ -467,13 +577,27 @@ modelo_log <- lm(log(charges) ~ age + bmi + children + sex + smoker + region,
 
 summary(modelo_log)
 ```
-Debido a que en el modelo inicial se evidenciaron desviaciones en los supuestos, se aplicó una transformación logarítmica a la variable respuesta, ajustando el modelo:
 
-\[
+Debido a que en el modelo inicial se evidenciaron desviaciones en los
+supuestos, se aplicó una transformación logarítmica a la variable
+respuesta, ajustando el modelo:
+
+$$
 \log(charges) \sim age + bmi + children + sex + smoker + region
-\]
+$$
 
-Los resultados muestran que la mayoría de variables explicativas continúan siendo estadísticamente significativas. En particular, la edad (\(p < 2e-16\)), el índice de masa corporal (\(p = 2.42 \times 10^{-10}\)), el número de hijos (\(p < 2e-16\)) y el hábito de fumar (\(p < 2e-16\)) presentan un efecto importante sobre los costos médicos. El coeficiente asociado a `smokeryes` es el más alto (\(1.5543\)), indicando que ser fumador incrementa considerablemente el costo esperado del seguro, incluso en escala logarítmica. Además, el modelo transformado alcanza un \(R^2 = 0.7679\), lo que significa que aproximadamente el 76.8% de la variabilidad en \(\log(charges)\) es explicada por las variables incluidas. En conjunto, esta transformación mejora la estabilidad de los errores y contribuye a un ajuste más adecuado del modelo.
+Los resultados muestran que la mayoría de variables explicativas
+continúan siendo estadísticamente significativas. En particular, la edad
+($p < 2e-16$), el índice de masa corporal ($p = 2.42 \times 10^{-10}$),
+el número de hijos ($p < 2e-16$) y el hábito de fumar ($p < 2e-16$)
+presentan un efecto importante sobre los costos médicos. El coeficiente
+asociado a `smokeryes` es el más alto ($1.5543$), indicando que ser
+fumador incrementa considerablemente el costo esperado del seguro,
+incluso en escala logarítmica. Además, el modelo transformado alcanza un
+$R^2 = 0.7679$, lo que significa que aproximadamente el 76.8% de la
+variabilidad en $\log(charges)$ es explicada por las variables
+incluidas. En conjunto, esta transformación mejora la estabilidad de los
+errores y contribuye a un ajuste más adecuado del modelo.
 
 ## 4.9 Prueba de hipótesis global
 
@@ -486,10 +610,25 @@ excepto el intercepto, son iguales a cero.
 summary(modelo)
 anova(modelo)
 ```
-Para evaluar la significancia global del modelo de regresión lineal múltiple, se realizó un análisis de varianza (ANOVA). Los resultados indican que el modelo es estadísticamente significativo en conjunto, ya que el estadístico F obtenido es \(F = 500.8\) con un valor-p menor a \(2.2 \times 10^{-16}\). Esto confirma que al menos una de las variables explicativas incluidas contribuye de manera importante a explicar la variabilidad en los costos médicos (`charges`). 
 
-Además, la tabla ANOVA muestra que variables como la edad (`age`), el índice de masa corporal (`bmi`) y especialmente el hábito de fumar (`smoker`) presentan efectos altamente significativos (\(p < 2.2 \times 10^{-16}\)), siendo `smoker` el factor con mayor influencia sobre los costos del seguro. También `children` resulta significativa (\(p = 8.446 \times 10^{-5}\)). Por otro lado, la variable `region` presenta un valor-p de \(0.096\), lo que sugiere que su efecto global es más débil en comparación con las demás. En conjunto, este análisis confirma que el modelo ajustado tiene capacidad explicativa relevante para predecir los costos médicos.
+Para evaluar la significancia global del modelo de regresión lineal
+múltiple, se realizó un análisis de varianza (ANOVA). Los resultados
+indican que el modelo es estadísticamente significativo en conjunto, ya
+que el estadístico F obtenido es $F = 500.8$ con un valor-p menor a
+$2.2 \times 10^{-16}$. Esto confirma que al menos una de las variables
+explicativas incluidas contribuye de manera importante a explicar la
+variabilidad en los costos médicos (`charges`).
 
+Además, la tabla ANOVA muestra que variables como la edad (`age`), el
+índice de masa corporal (`bmi`) y especialmente el hábito de fumar
+(`smoker`) presentan efectos altamente significativos
+($p < 2.2 \times 10^{-16}$), siendo `smoker` el factor con mayor
+influencia sobre los costos del seguro. También `children` resulta
+significativa ($p = 8.446 \times 10^{-5}$). Por otro lado, la variable
+`region` presenta un valor-p de $0.096$, lo que sugiere que su efecto
+global es más débil en comparación con las demás. En conjunto, este
+análisis confirma que el modelo ajustado tiene capacidad explicativa
+relevante para predecir los costos médicos.
 
 ## 4.10 Pruebas de hipótesis individuales
 
@@ -502,19 +641,48 @@ constantes las demás variables.
 ```{r}
 summary(modelo)$coefficients
 ```
-Las pruebas de hipótesis individuales permiten evaluar si cada variable explicativa tiene un efecto significativo sobre el costo del seguro médico (`charges`), manteniendo constantes las demás variables del modelo. Para cada coeficiente se contrasta la hipótesis nula \(H_0: \beta_j = 0\), es decir, que la variable no tiene influencia estadísticamente significativa.
 
-Los resultados muestran que la variable `age` es altamente significativa (\(p < 2.2 \times 10^{-16}\)), indicando que, en promedio, por cada año adicional de edad el costo del seguro aumenta en aproximadamente **256.86 unidades monetarias**, manteniendo constantes las demás variables. Asimismo, el índice de masa corporal `bmi` también es significativo (\(p < 2.2 \times 10^{-16}\)), lo que sugiere que un incremento de una unidad en el BMI incrementa el gasto esperado en alrededor de **339.19 unidades**.
+Las pruebas de hipótesis individuales permiten evaluar si cada variable
+explicativa tiene un efecto significativo sobre el costo del seguro
+médico (`charges`), manteniendo constantes las demás variables del
+modelo. Para cada coeficiente se contrasta la hipótesis nula
+$H_0: \beta_j = 0$, es decir, que la variable no tiene influencia
+estadísticamente significativa.
 
-La variable `children` presenta un efecto positivo y significativo (\(p = 0.000577\)), indicando que tener más hijos dependientes se asocia con un aumento promedio de **475.50 unidades** en el costo del seguro.
+Los resultados muestran que la variable `age` es altamente significativa
+($p < 2.2 \times 10^{-16}$), indicando que, en promedio, por cada año
+adicional de edad el costo del seguro aumenta en aproximadamente
+**256.86 unidades monetarias**, manteniendo constantes las demás
+variables. Asimismo, el índice de masa corporal `bmi` también es
+significativo ($p < 2.2 \times 10^{-16}$), lo que sugiere que un
+incremento de una unidad en el BMI incrementa el gasto esperado en
+alrededor de **339.19 unidades**.
 
-Por otro lado, la variable `sexmale` no resulta significativa (\(p = 0.693\)), lo que implica que no existe evidencia suficiente para afirmar que el costo del seguro difiera entre hombres y mujeres cuando se controlan las demás variables.
+La variable `children` presenta un efecto positivo y significativo
+($p = 0.000577$), indicando que tener más hijos dependientes se asocia
+con un aumento promedio de **475.50 unidades** en el costo del seguro.
 
-La variable con mayor impacto es `smokeryes`, que es extremadamente significativa (\(p < 2.2 \times 10^{-16}\)). El coeficiente estimado indica que ser fumador incrementa el costo del seguro en aproximadamente **23848.53 unidades**, convirtiéndose en el predictor más importante del modelo.
+Por otro lado, la variable `sexmale` no resulta significativa
+($p = 0.693$), lo que implica que no existe evidencia suficiente para
+afirmar que el costo del seguro difiera entre hombres y mujeres cuando
+se controlan las demás variables.
 
-Finalmente, respecto a la región geográfica, `regionnorthwest` no es significativa (\(p = 0.459\)), mientras que `regionsoutheast` (\(p = 0.0308\)) y `regionsouthwest` (\(p = 0.0448\)) presentan efectos negativos moderados, sugiriendo diferencias regionales leves en los costos médicos con respecto a la región de referencia.
+La variable con mayor impacto es `smokeryes`, que es extremadamente
+significativa ($p < 2.2 \times 10^{-16}$). El coeficiente estimado
+indica que ser fumador incrementa el costo del seguro en aproximadamente
+**23848.53 unidades**, convirtiéndose en el predictor más importante del
+modelo.
 
-En conclusión, las variables más relevantes para explicar el costo del seguro médico son la edad, el BMI y especialmente el hábito de fumar, mientras que el sexo y algunas regiones no muestran un efecto estadísticamente significativo dentro del modelo.
+Finalmente, respecto a la región geográfica, `regionnorthwest` no es
+significativa ($p = 0.459$), mientras que `regionsoutheast`
+($p = 0.0308$) y `regionsouthwest` ($p = 0.0448$) presentan efectos
+negativos moderados, sugiriendo diferencias regionales leves en los
+costos médicos con respecto a la región de referencia.
+
+En conclusión, las variables más relevantes para explicar el costo del
+seguro médico son la edad, el BMI y especialmente el hábito de fumar,
+mientras que el sexo y algunas regiones no muestran un efecto
+estadísticamente significativo dentro del modelo.
 
 ## 4.11 Estimación de una media (puntual e intervalar)
 
@@ -536,7 +704,17 @@ nuevo <- data.frame(
 predict(modelo, nuevo, interval = "confidence")
 
 ```
-El intervalo de confianza obtenido permite estimar el **costo médico promedio esperado** para un individuo con las características especificadas (edad 40 años, BMI 28, 2 hijos, hombre, no fumador y residente en la región suroeste). El modelo predice un gasto medio aproximado de **7692.77 unidades monetarias**. Además, con un nivel de confianza del 95%, se concluye que el verdadero costo promedio para personas con este perfil se encuentra entre **6887.33** y **8498.21**. Este intervalo refleja únicamente la incertidumbre asociada a la estimación de la media poblacional, por lo que es más estrecho que un intervalo de predicción individual.
+
+El intervalo de confianza obtenido permite estimar el **costo médico
+promedio esperado** para un individuo con las características
+especificadas (edad 40 años, BMI 28, 2 hijos, hombre, no fumador y
+residente en la región suroeste). El modelo predice un gasto medio
+aproximado de **7692.77 unidades monetarias**. Además, con un nivel de
+confianza del 95%, se concluye que el verdadero costo promedio para
+personas con este perfil se encuentra entre **6887.33** y **8498.21**.
+Este intervalo refleja únicamente la incertidumbre asociada a la
+estimación de la media poblacional, por lo que es más estrecho que un
+intervalo de predicción individual.
 
 ## 4.12 Predicción de un nuevo valor (puntual e intervalar)
 
@@ -549,23 +727,191 @@ intervalo de confianza de la media.
 ```{r}
 predict(modelo, nuevo, interval = "prediction")
 ```
-El intervalo de predicción obtenido permite estimar el rango en el que podría ubicarse el **costo médico de un caso individual específico** con las características dadas (edad 40 años, BMI 28, 2 hijos, hombre, no fumador y residente en la región suroeste). El modelo predice un gasto aproximado de **7692.77 unidades monetarias**, pero debido a la variabilidad natural entre individuos, se espera que el costo real de una persona con este perfil pueda encontrarse, con un 95% de confianza, entre **-4226.81** y **19612.34**. Este intervalo es considerablemente más amplio que el intervalo de confianza para la media, ya que incorpora no solo la incertidumbre en la estimación del promedio, sino también la dispersión propia de los valores individuales. El límite inferior negativo no representa un costo real posible, sino una consecuencia matemática de la amplitud del intervalo y la variabilidad presente en los datos.
+
+El intervalo de predicción obtenido permite estimar el rango en el que
+podría ubicarse el **costo médico de un caso individual específico** con
+las características dadas (edad 40 años, BMI 28, 2 hijos, hombre, no
+fumador y residente en la región suroeste). El modelo predice un gasto
+aproximado de **7692.77 unidades monetarias**, pero debido a la
+variabilidad natural entre individuos, se espera que el costo real de
+una persona con este perfil pueda encontrarse, con un 95% de confianza,
+entre **-4226.81** y **19612.34**. Este intervalo es considerablemente
+más amplio que el intervalo de confianza para la media, ya que incorpora
+no solo la incertidumbre en la estimación del promedio, sino también la
+dispersión propia de los valores individuales. El límite inferior
+negativo no representa un costo real posible, sino una consecuencia
+matemática de la amplitud del intervalo y la variabilidad presente en
+los datos.
 
 # **5. REPLICABILIDAD DEL TUTORIAL**
 
-Para replicar este tutorial con un conjunto de datos distinto, el
-estudiante debe mantener la estructura general del documento y modificar
-únicamente los siguientes elementos:
+La replicabilidad de este tutorial con un conjunto de datos diferente
+depende mucho del formato, estructura y variables que se desea analizar.
+Como primeras condiciones tenemos que la variable que necesitamos
+estimar tiene que ser cuantitativa continua o discreta pero con valores
+relativamente altos, por lo tanto, las variables explicativas al
+formular el modelo tienen que ser cuantitativas de igual manera (si no
+lo son, se harán de forma binaria) sean cualitativas o no.
 
--   El archivo de entrada en la función `read.csv()`, reemplazando el
-    nombre del archivo por el nuevo conjunto de datos.
--   La definición de la variable respuesta y las variables explicativas
-    en la fórmula del modelo dentro de la función `lm()`.
+1.  Como primer paso leeremos el dataset de interés, siendo la lectura
+    de estos conocimiento previo con funciones tales como read.csv,
+    read.csv2 o read_excel (del paquete readxl).   
+    
+```{r, eval=FALSE}
+    datos = read.csv("mi_dataset.csv")
+    library(readxl)
+    datos = read_excel("mi_dataset.xlsx")
+```
+    
 
-El resto del código, incluyendo la exploración de datos, la verificación
-de supuestos, las pruebas de hipótesis y los procedimientos de
-estimación y predicción, puede mantenerse sin cambios, lo que garantiza
-la reproducibilidad del análisis.
+2.  Luego se realizará un análisis descriptivo del dataset, esto nos
+    permitirá obtener diferentes estadísticas, así como podemos realizar
+    gráficos que nos permitirán analizar las variables de interés y cómo
+    se comportan. Se hará un análisis exploratorio en general. Para
+    nuestro caso se realizaron de la siguiente manera.
+
+    Resumen descriptivo del dataset importado
+
+```{r, eval=FALSE}
+summary(datos)
+```
+    
+
+    Boxplot básico de las variables que creamos necesarias
+
+```{r, eval=FALSE}
+boxplot(var1 ~ var2,
+        data = datos,
+        main = "Título del boxplot comparando var1 con var2",
+        xlab = "Nombre de var2",
+        ylab = "Var1")
+
+```
+    
+
+3.  Prosiguiendo con el tutorial, pasamos a la formulación del modelo de
+    RLM. Como se había mencionado antes, la variable objetivo
+    preferiblemente debe ser cuantitativa continua y si es discreta esta
+    debe ser de valores altos. Luego, decidiremos qué variables podrían
+    afectar a esta variable objetivo, teniendo así las variables
+    independientes de nuestro modelo.
+
+    Formulamos el modelo y su conversión a factor de ser necesaria
+
+    Cada apartado del mismo han sido explicados en el documento
+
+```{r, eval=FALSE}
+modelo = lm(vartarget \~ var 1 + var 2 + var 3 + var 4, datos)
+```
+    
+
+    Luego podemos ver los coeficientes del modelo ajustado e
+    interpretarlos
+
+```{r, eval=FALSE}
+coef(modelo)
+```
+    
+
+4.  Como una continuación del anterior apartado, obtenemos el
+    coeficiente de determinación $R^2$, el cual nos indicará en qué
+    proporción la variabilidad total de nuestra variable objetivo es
+    explicada por las variables explicativas valga la redundancia
+    elegidas del dataset. Si obtenemos un valor alto de este
+    coeficiente, significa que se dio un buen ajuste del modelo con las
+    observaciones del dataset.
+
+    Obtenemos el coeficiente de determinación
+
+```{r,eval=FALSE}
+summary(modelo)\$r.squared
+```
+    
+
+5.  Como ya se explicó anteriormente, se necesitan verificar diferentes
+    supuestos acerca de los errores o residuales dentro del modelo, el
+    primero será el de normalidad de errores.
+
+    Para este primer supuesto se pueden verificar visualmente como con
+    pruebas estadísticas. Primeramente, es necesario extraer los
+    residuales de nuestro modelo.
+
+```{r, eval=FALSE}
+residuales = residuals(modelo)
+```
+    
+
+    Luego, podemos elaborar un histograma y densidad de estos residuales
+    con el paquete ggplot2 siendo el código completamente adaptable al
+    usuario del ejemplo ya hecho en el apartado del documento
+    correspondiente.
+
+```{r, eval=FALSE}
+library(ggplot2)
+library(dplyr)
+residuales |>
+  ggplot() + aes(x = residuales) +
+  geom_histogram(aes(y = ..density..),
+                 bins = round(1 + 3.3 * log10(nrow(insurance))),
+                 fill = "dodgerblue2",
+                 alpha = 0.6) +
+  geom_density(size = 1.2) +
+  labs(title = "Histograma y densidad de los residuales",
+       x = "Residuales",
+       y = "Densidad") +
+  theme_minimal()
+
+```
+    
+
+    Lo que se trata de encontrar es que este histograma sea lo más
+    parecido a una distribución normal.
+
+    Otra verificación gráfica puede hacerse con el gráfico de quantil vs
+    quantil.
+
+```{r, eval=FALSE}
+qqnorm(residuales); qqline(residuales)
+```
+    
+
+    La verificación de este gráfico debe ser interpretar las
+    observaciones tanto en la parte inicial como final de la línea que
+    observamos, se busca que las observaciones sean lo más cercanas a la
+    línea definida.
+
+    Por último, para este supuesto, para su robustes, podemos
+    verificarlo mediante la prueba estadística de Shapiro-Wilk podemos
+    determinar la veracidad de nuestra hipótesis nula o alterna
+    detallada en el documento buscamos un pvalor alto para su
+    verificación, por el contrario, si obtenemos uno menor que el nivel
+    de significancia, se rechazará la hipótesis nula.
+
+```{r, eval=FALSE}
+shapiro.test(residuals(modelo))
+```
+    
+
+6.  El segundo supuesto de Homocedasticidad: Indica que la varianza de
+    los errores del modelo es constante.
+
+    Primero cargamos el paquete necesario
+
+```{r, eval=FALSE}
+library(lmtest)
+```
+
+    De la misma manera que para la hipótesis nula y alterna del supuesto
+    de normalidad, buscamos valores altos del pvalor para su
+    verificación.
+
+```{r, eval=FALSE}
+bptest(modelo)
+```
+    
+
+7.  Y por último el de independencia de errores: El cual establece que
+    los errores del modelo no están correlacionados entre sí.
 
 # **6. CONCLUSIONES**
 

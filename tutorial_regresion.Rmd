@@ -321,17 +321,46 @@ summary(modelo)
 
 ## 4.3 Interpretación de los coeficientes de regresión
 
-Cada coeficiente estimado del modelo de regresión lineal múltiple
-representa el cambio promedio esperado en el costo del seguro médico
-ante un incremento de una unidad en la variable explicativa
-correspondiente, manteniendo constantes las demás variables del modelo.
+Cada coeficiente estimado en el modelo de regresión lineal múltiple representa el cambio promedio esperado en el costo del seguro médico (`charges`) ante un incremento de una unidad en la variable explicativa correspondiente, manteniendo constantes las demás variables del modelo.
 
-En el caso de las variables cuantitativas, el coeficiente indica cuánto
-aumenta o disminuye el valor esperado de `charges` por cada unidad
-adicional de la variable. Para las variables cualitativas, los
-coeficientes se interpretan en relación con una categoría de referencia,
-mostrando la diferencia promedio en el costo del seguro médico respecto
-a dicha categoría.
+---
+
+**Intercepto**
+
+El intercepto estimado es \(-11938.5\), el cual representa el valor esperado de `charges` cuando todas las variables cuantitativas valen cero y el individuo pertenece a las categorías de referencia (sexo femenino, no fumador y región noreste). Sin embargo, este valor no necesariamente tiene una interpretación práctica directa.
+
+**Edad (`age`)**
+
+El coeficiente asociado a `age` es \(256.9\), lo que indica que por cada año adicional de edad, el costo médico promedio aumenta aproximadamente en 256.9 unidades monetarias, manteniendo constantes las demás variables.
+
+**Índice de masa corporal (`bmi`)**
+
+El coeficiente estimado para `bmi` es \(339.2\). Esto sugiere que un aumento de una unidad en el BMI incrementa en promedio los costos médicos en 339.2 unidades, bajo las mismas condiciones.
+
+**Número de hijos (`children`)**
+
+La variable `children` presenta un coeficiente de \(475.5\), indicando que cada hijo adicional está asociado con un aumento promedio de 475.5 unidades en los gastos médicos.
+
+**Sexo (`sexmale`)**
+
+Para la variable categórica `sexmale`, el coeficiente es \(-131.3\), lo que implica que, en promedio, los hombres presentan costos ligeramente menores que las mujeres. No obstante, este efecto no resulta estadísticamente significativo.
+
+**Hábito de fumar (`smokeryes`)**
+
+El coeficiente para `smokeryes` es \(23848.5\), mostrando que los fumadores tienen costos médicos considerablemente más altos: en promedio, 23848.5 unidades adicionales en comparación con los no fumadores. Este es el efecto más fuerte dentro del modelo.
+
+**Región (`region`)**
+
+En cuanto a la variable `region`, los coeficientes representan diferencias respecto a la región de referencia (noreste):
+
+- Vivir en el noroeste (`regionnorthwest`) reduce en promedio los costos en 353.0 unidades.  
+- Vivir en el sureste (`regionsoutheast`) reduce los costos en 1035.0 unidades.  
+- Vivir en el suroeste (`regionsouthwest`) reduce los costos en 960.0 unidades.  
+
+
+
+En conjunto, estos resultados permiten identificar qué factores influyen con mayor intensidad sobre el costo del seguro médico, destacando principalmente el hábito de fumar como el predictor más importante.
+
 
 ## 4.4 Coeficiente de determinación
 

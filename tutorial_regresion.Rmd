@@ -402,7 +402,16 @@ qqnorm(residuales); qqline(residuales)
 shapiro.test(residuals(modelo))
 ```
 
-Para verificar el supuesto de normalidad de los errores del modelo, se analizó el gráfico Normal Q–Q Plot y se aplicó la prueba de Shapiro–Wilk. En el Q–Q Plot se observa que los puntos se desvían notablemente de la línea diagonal, especialmente en los extremos, lo que sugiere que los residuos no siguen una distribución Normal. Esto se confirma con la prueba de Shapiro–Wilk, cuyo resultado fue \(W = 0.89894\) con un valor p extremadamente pequeño (\(p < 2.2 \times 10^{-16}\)), por lo que se rechaza la hipótesis nula de normalidad. En consecuencia, existe evidencia estadística de que el supuesto de normalidad no se cumple completamente, lo cual es común en el dataset *Insurance* debido a la asimetría de la variable `charges`, por lo que podría considerarse una transformación como el logaritmo para mejorar el ajuste.
+*Prueba de normalidad (Shapiro–Wilk)**
+
+Para evaluar el supuesto de normalidad de los residuos del modelo, se aplicó la prueba de Shapiro–Wilk, la cual contrasta las siguientes hipótesis:
+
+- **Hipótesis nula \(H_0\):** los residuos siguen una distribución Normal.  
+- **Hipótesis alternativa \(H_1\):** los residuos no siguen una distribución Normal.
+
+El resultado obtenido fue \(W = 0.89894\) con un valor-p extremadamente pequeño (\(p < 2.2 \times 10^{-16}\)).  
+Dado que el valor-p es menor que el nivel de significancia usual (\(\alpha = 0.05\)), se **rechaza la hipótesis nula**, concluyendo que existe evidencia estadística de que los residuos no cumplen completamente el supuesto de normalidad. Esto es consistente con la asimetría observada en la variable `charges`, por lo que podría considerarse una transformación logarítmica para mejorar el ajuste.
+
 
 
 ## 4.6 Verificación del supuesto de homocedasticidad

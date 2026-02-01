@@ -203,7 +203,6 @@ distintos factores, los cuales se explicarán a continuación.
 | `bmi` | Cuantitativa continua | Índice de masa corporal calculado a partir del peso y la altura (kg/m²). |
 | `children` | Cuantitativa discreta | Número de hijos o personas a cargo cubiertas por el seguro médico. |
 | `smoker` | Cualitativa nominal | Indica si el asegurado es fumador (1) o no fumador (0). |
-| `region` | Cualitativa nominal | Región de residencia del asegurado en EE.UU.: noreste, sureste, suroeste o noroeste. |
 | `charges` | Cuantitativa continua | Gastos médicos individuales facturados por el seguro médico (variable respuesta). |
 
 En el presente estudio, la variable `charges` se considera como la
@@ -221,7 +220,9 @@ cargado correctamente y observar las primeras observaciones del conjunto
 de datos.
 
 ```{r}
+library(dplyr)
 insurance <- read.csv("data/insurance.csv")
+insurance <- insurance %>% select(-region)
 head(insurance)
 ```
 
@@ -322,7 +323,7 @@ dentro del modelo de regresión lineal múltiple.
 El modelo de regresión lineal múltiple propuesto es:
 
 $$
-Y = \beta_0 + \beta_1X_1 + \beta_2X_2 + \beta_3X_3 + \beta_4X_4 + \beta_5X_5 + \beta_6X_6 + \varepsilon
+Y = \beta_0 + \beta_1X_1 + \beta_2X_2 + \beta_3X_3 + \beta_4X_4 + \beta_5X_5 + \varepsilon
 $$
 
 donde:
@@ -347,9 +348,6 @@ donde:
 
 -   $X_5$ : Indica si el asegurado es fumador (1) o no fumador (0).
 
--   $X_6$ : Región de residencia del asegurado en EE.UU.: noreste,
-    sureste, suroeste o noroeste.
-
 -   $\varepsilon$ representa el término de error aleatorio, el cual
     recoge la variabilidad no explicada por el modelo.
 
@@ -364,9 +362,8 @@ estadística de las variables explicativas incluidas en el análisis.
 ```{r}
 insurance$sex <- as.factor(insurance$sex)
 insurance$smoker <- as.factor(insurance$smoker)
-insurance$region <- as.factor(insurance$region)
 
-modelo <- lm(charges ~ age + bmi + children + sex + smoker + region,
+modelo <- lm(charges ~ age + bmi + children + sex + smoker,
              data = insurance)
 
 summary(modelo)
@@ -386,7 +383,7 @@ correspondiente, manteniendo constantes las demás variables del modelo.
 El intercepto estimado es $-11938.5$, el cual representa el valor
 esperado de `charges` cuando todas las variables cuantitativas valen
 cero y el individuo pertenece a las categorías de referencia (sexo
-femenino, no fumador y región noreste). Sin embargo, este valor no
+femenino, no fumador). Sin embargo, este valor no
 necesariamente tiene una interpretación práctica directa.
 
 **Edad (`age`)**
@@ -422,17 +419,6 @@ fumadores tienen costos médicos considerablemente más altos: en
 promedio, 23848.5 unidades adicionales en comparación con los no
 fumadores. Este es el efecto más fuerte dentro del modelo.
 
-**Región (`region`)**
-
-En cuanto a la variable `region`, los coeficientes representan
-diferencias respecto a la región de referencia (noreste):
-
--   Vivir en el noroeste (`regionnorthwest`) reduce en promedio los
-    costos en 353.0 unidades.\
--   Vivir en el sureste (`regionsoutheast`) reduce los costos en 1035.0
-    unidades.\
--   Vivir en el suroeste (`regionsouthwest`) reduce los costos en 960.0
-    unidades.
 
 El predictor más influyente es smoker, lo que confirma lo observado en
 el análisis bivariado.En conjunto, estos resultados permiten identificar
@@ -448,7 +434,7 @@ conjunto de variables explicativas incluidas en el modelo. Un valor alto
 de $R^2$ sugiere un buen ajuste del modelo a los datos observados.
 
 ```{r}
-summary(modelo)$r.squared
+summary(modelo)$adj.r.squared
 ```
 
 ## 4.5 Verificación del supuesto de normalidad de errores
@@ -492,13 +478,27 @@ qqnorm(residuales); qqline(residuales)
 ```
 Se puede observar un fuerte alejamiento de los puntos hacía la esquina superior derecha, lo que podría implicar asímetría y así mismo, el incumplimiento del supuesto de normalidad.
 
+*Agostino test*
+Se utiliza para tener pruebas estadísticas de que el coeficiente de asimetría de los residuos es diferente significativamente de 0:
+
 $H_0: As = 0  \qquad  H_1: As \neq 0 \qquad \alpha = 0.05$
 
 ```{r}
-
+library(moments)
+residuales |> agostino.test()
 ```
+Se rechaza $H_0$, entonces existe evidencia de que el coeficiente de asímetria es diferente de cero, por lo que existe asímetría
 
+*Anscombe test*
+Se utiliza para tener pruebas estadísticas de que el coeficiente de kurtosis de los residuos es diferente significativamente de 3:
 
+$H_0:  K= 3  \qquad  H_1: K \neq 3 \qquad \alpha = 0.05$
+```{r}
+library(dplyr)
+residuales %>%  anscombe.test
+```
+Se rechaza $H_0$, por lo que existe suficiente evidencia para concluir que el coeficiente de kurtosis es distinto de 3(los errores no son mesocúrticos).
+Por lo que es una prueba más de que el supuesto de normalidad no se cumple.
 ```{r}
 shapiro.test(residuals(modelo))
 ```
@@ -530,6 +530,87 @@ constante para todos los valores de las variables explicativas. Este
 supuesto es fundamental para que las estimaciones de los coeficientes y
 las pruebas de hipótesis sean válidas.
 
+Primero, elaboramos dos gráficos, uno de los puntos de los residuales vs los valores ajustados y residuales estandarizados vs los valores ajustados , esto para comprobar que los residuales tienen una distribución aleatoria, lo que sería un indicio del cumplimiento del supuesto de homocedasticidad.
+```{r}
+modelo |> plot(which=1)
+```
+```{r}
+modelo |> plot(which=3)
+```
+En Ambos gráficos se observa como que la linea que debería de "envolver" los puntos divergen cuando los valores ajustados disminuyen, debido a que los puntos no están distribuidos homogeneamente. Es un indicio  de heterocedasticidad.
+
+Con la finalidad de obtener más indisios de homocedasticidad, se hará un diagrama de puntos de manera individual de cada variable explicativa vs variable respuesta. 
+```{r}
+library(broom)
+modelo |> augment() |>
+ggplot(aes(x=age,y=charges))+
+geom_point(size = 3) +
+geom_hline(yintercept=0)+
+labs(x = " Edad del beneficiario directo, medida en años completos",
+y = "Residual",
+title = "Evaluación de homocedasticidad",
+subtitle = "Modelo")+
+theme_minimal()
+```
+Los residuales tienden a ser más dispersos conforme la edad del beneficiario aumenta.
+
+```{r}
+modelo |> augment() |>
+ggplot(aes(x=bmi,y=charges))+
+geom_point(size = 3) +
+geom_hline(yintercept=0)+
+labs(x = "  Índice de masa corporal calculado a partir del peso y la altura en (kg/m2)",
+y = "Residual",
+title = "Evaluación de homocedasticidad",
+subtitle = "Modelo")+
+theme_minimal()
+```
+Los residuales presentan una mayor dispersión cuando el índice de masa corporal es alto.
+
+```{r}
+modelo |> augment() |>
+ggplot(aes(x=children,y=charges))+
+geom_point(size = 3) +
+geom_hline(yintercept=0)+
+labs(x = "  Número de hijos o personas a cargo cubiertas por el seguro médico.",
+y = "Residual",
+title = "Evaluación de homocedasticidad",
+subtitle = "Modelo")+
+theme_minimal()
+```
+Los residuales presentan una leve disminución de dispersión conforme se tienen más hijos o personas a cargo cubiertas por el seguro médico, hasta que llega a 4, donde la dispersión baja más a comparación de los anteriores, y sigue bajando cuando la variable toma el valor de 5.
+
+```{r}
+modelo |> augment() |>
+ggplot(aes(x=sex,y=charges))+
+geom_point(size = 3) +
+geom_hline(yintercept=0)+
+labs(x = "Sexo del beneficiario: Hombre (1) o Mujer (0).",
+y = "Residual",
+title = "Evaluación de homocedasticidad",
+subtitle = "Modelo")+
+theme_minimal()
+```
+Los residuales tienden a tener la misma dispersión tanto para hombres como para mujeres.
+
+```{r}
+modelo |> augment() |>
+ggplot(aes(x=smoker,y=charges))+
+geom_point(size = 3) +
+geom_hline(yintercept=0)+
+labs(x = " Indica si el asegurado es fumador (1) o no fumador (0)",
+y = "Residual",
+title = "Evaluación de homocedasticidad",
+subtitle = "Modelo")+
+theme_minimal()
+```
+Los residuales son más dispersos para los que fuman.
+
+
+Como se ha encontrado patrones residuales cuando se compara la variable respuesta con ciertas variables explicativas , es una evidencia más de que haya heterocedasticidad.
+
+
+
 ```{r}
 library(lmtest)
 bptest(modelo)
@@ -553,7 +634,7 @@ residuos del modelo presentan **heterocedasticidad**, es decir, la
 variabilidad de los errores no se mantiene constante a lo largo de los
 valores ajustados. Esto es común en datos como el dataset *Insurance*,
 donde los costos médicos pueden mostrar gran dispersión en ciertos
-grupos, por lo que podría considerarse una transformación (como el
+grupos, como se ha observado con los gráficos anteriores, por lo que podría considerarse una transformación (como el
 logaritmo) o el uso de métodos robustos para mejorar el ajuste del
 modelo.
 
@@ -564,6 +645,31 @@ están correlacionados entre sí. Dado que los datos corresponden a
 observaciones individuales y no a una serie temporal, se asume que este
 supuesto se cumple.
 
+Se creará un gráfico de secuencia de residuos en busca de patrones con la finalidad de verificar con evidencias el supuesto.
+```{r}
+data.frame(residuales) |>
+ggplot(aes(x=1:nrow(insurance),y=residuales))+
+geom_point(size = 1.5) +
+geom_line()+
+geom_hline(yintercept=0)+
+labs(x = "Orden", y = "Residual", title = "Evaluación de independencia") +
+theme_minimal()
+```
+Si bien podríamos observar a simple vista que no se cumple ningún patron, la cantidad de datos impide el claro analisis de este gráfico.
+
+Para solucionar el problema de la interpretación del gráfico anterior, haremos un correlograma con la finalidad de verificar si existe o no independencia de errores. 
+
+```{r}
+library(ggfortify)
+library(pacman)
+p_load(TSA)
+residuales |>
+TSA::acf(lag = 18, plot=F) |>
+autoplot() +
+labs(x = "Desfase",y = "Autocorrelación") +
+theme_minimal()
+```
+Debido a que todas las autocorrelaciones están dentro de los límites azuales de confianza, decimos que son estadisticamente iguales a cero, lo que evidenciaría independencia de errores.
 ```{r}
 library(lmtest)
 dwtest(modelo)
@@ -600,7 +706,7 @@ estadísticas. Una transformación común es el uso del logaritmo natural
 de la variable `charges`.
 
 ```{r}
-modelo_log <- lm(log(charges) ~ age + bmi + children + sex + smoker + region,
+modelo_log <- lm(log(charges) ~ age + bmi + children + sex + smoker ,
                  data = insurance)
 
 summary(modelo_log)
@@ -610,10 +716,11 @@ Debido a que en el modelo inicial se evidenciaron desviaciones en los
 supuestos, se aplicó una transformación logarítmica a la variable
 respuesta, ajustando el modelo:
 
-$$
-\log(charges) \sim age + bmi + children + sex + smoker + region
-$$
 
+
+$$
+\log(charges) \sim age + bmi + children + sex + smoker 
+$$
 Los resultados muestran que la mayoría de variables explicativas
 continúan siendo estadísticamente significativas. En particular, la edad
 ($p < 2e-16$), el índice de masa corporal ($p = 2.42 \times 10^{-10}$),
@@ -626,6 +733,19 @@ $R^2 = 0.7679$, lo que significa que aproximadamente el 76.8% de la
 variabilidad en $\log(charges)$ es explicada por las variables
 incluidas. En conjunto, esta transformación mejora la estabilidad de los
 errores y contribuye a un ajuste más adecuado del modelo.
+
+
+formulación del modelo con la transformación logarítmica
+$$log(y) = \beta_0+\beta_1X_1 + \beta_2X_2 + \beta_3X_3 +\beta_4X_4 +\beta_5X_5 $$
+obtenemos sus coeficientes para tener la ecuación estimada
+```{r}
+modelo_log %>% coef()
+```
+$$log(y) = 7.03+0.035X_1 + 0.013X_2 + 0.102X_3 - 0.075X_4 + 1.554 X_5 $$
+- 0.035:  Por cada año adicional de edad, la mediana de los costos médicos aumenta en 3.52%, manteniendo constantes las demás variables.
+
+Tests para verificar cumplimiento de los supuestos:
+
 
 ## 4.9 Prueba de hipótesis global
 
@@ -652,11 +772,7 @@ Además, la tabla ANOVA muestra que variables como la edad (`age`), el
 (`smoker`) presentan efectos altamente significativos
 ($p < 2.2 \times 10^{-16}$), siendo `smoker` el factor con mayor
 influencia sobre los costos del seguro. También `children` resulta
-significativa ($p = 8.446 \times 10^{-5}$). Por otro lado, la variable
-`region` presenta un valor-p de $0.096$, lo que sugiere que su efecto
-global es más débil en comparación con las demás. En conjunto, este
-análisis confirma que el modelo ajustado tiene capacidad explicativa
-relevante para predecir los costos médicos.
+significativa ($p = 8.446 \times 10^{-5}$). 
 
 ## 4.10 Pruebas de hipótesis individuales
 
@@ -701,15 +817,9 @@ indica que ser fumador incrementa el costo del seguro en aproximadamente
 **23848.53 unidades**, convirtiéndose en el predictor más importante del
 modelo.
 
-Finalmente, respecto a la región geográfica, `regionnorthwest` no es
-significativa ($p = 0.459$), mientras que `regionsoutheast`
-($p = 0.0308$) y `regionsouthwest` ($p = 0.0448$) presentan efectos
-negativos moderados, sugiriendo diferencias regionales leves en los
-costos médicos con respecto a la región de referencia.
-
 En conclusión, las variables más relevantes para explicar el costo del
 seguro médico son la edad, el BMI y especialmente el hábito de fumar,
-mientras que el sexo y algunas regiones no muestran un efecto
+mientras que el sexo no muestra un efecto
 estadísticamente significativo dentro del modelo.
 
 ## 4.11 Estimación de una media (puntual e intervalar)
@@ -725,21 +835,20 @@ nuevo <- data.frame(
   bmi = 28,
   children = 2,
   sex = "male",
-  smoker = "no",
-  region = "southwest"
+  smoker = "no"
 )
 
-predict(modelo, nuevo, interval = "confidence")
+
+modelo_log %>%  predict(newdata = nuevo, interval = "confidence") %>%  exp()
 
 ```
 
 El intervalo de confianza obtenido permite estimar el **costo médico
 promedio esperado** para un individuo con las características
-especificadas (edad 40 años, BMI 28, 2 hijos, hombre, no fumador y
-residente en la región suroeste). El modelo predice un gasto medio
-aproximado de **7692.77 unidades monetarias**. Además, con un nivel de
+especificadas (edad 40 años, BMI 28, 2 hijos, hombre, no fumador ). El modelo predice un gasto medio
+aproximado de **8103.318 unidades monetarias**. Además, con un nivel de
 confianza del 95%, se concluye que el verdadero costo promedio para
-personas con este perfil se encuentra entre **6887.33** y **8498.21**.
+personas con este perfil se encuentra entre **7528.774** y **8677.862**.
 Este intervalo refleja únicamente la incertidumbre asociada a la
 estimación de la media poblacional, por lo que es más estrecho que un
 intervalo de predicción individual.
@@ -753,14 +862,15 @@ esta razón, el intervalo de predicción suele ser más amplio que el
 intervalo de confianza de la media.
 
 ```{r}
-predict(modelo, nuevo, interval = "prediction")
+
+modelo_log %>%  predict(newdata = nuevo, interval = "prediction") %>%  exp()
 ```
 
 El intervalo de predicción obtenido permite estimar el rango en el que
 podría ubicarse el **costo médico de un caso individual específico** con
 las características dadas (edad 40 años, BMI 28, 2 hijos, hombre, no
-fumador y residente en la región suroeste). El modelo predice un gasto
-aproximado de **7692.77 unidades monetarias**, pero debido a la
+fumador). El modelo predice un gasto
+aproximado de **8103.318 unidades monetarias**, pero debido a la
 variabilidad natural entre individuos, se espera que el costo real de
 una persona con este perfil pueda encontrarse, con un 95% de confianza,
 entre **-4226.81** y **19612.34**. Este intervalo es considerablemente
@@ -906,6 +1016,8 @@ La verificación de este gráfico debe ser interpretar las
 observaciones tanto en la parte inicial como final de la línea que
 observamos, se busca que las observaciones sean lo más cercanas a la
 línea definida.
+
+
 
 Por último, para este supuesto, para su robustes, podemos
 verificarlo mediante la prueba estadística de Shapiro-Wilk podemos
